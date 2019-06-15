@@ -45,6 +45,11 @@ public class GS_Level : MonoBehaviour
         Debug.Assert(m_Camera2);
         Debug.Assert(m_Camera3);
 
+        // update camera status
+        m_Camera1.enabled = true;
+        m_Camera2.enabled = false;
+        m_Camera3.enabled = false;
+
         // get the player character
         m_Laure = GameObject.Find("Laure");
         Debug.Assert(m_Laure);
@@ -52,7 +57,7 @@ public class GS_Level : MonoBehaviour
         // get the player character script
         m_Player = m_Laure.GetComponentInChildren<GS_Player>();
         Debug.Assert(m_Player);
-        m_Player.OnPlayerTriggerEnter = OnPlayerTriggerEnter;
+        m_Player.OnTriggerInside = OnPlayerTriggerInside;
 
         // lock the cursor
         LockCursor(true);
@@ -98,29 +103,29 @@ public class GS_Level : MonoBehaviour
     }
 
     /**
-    * Notifies that the character entered in a new trigger zone
+    * Called while the character stays inside a trigger zone
     *@param sender - event sender
     *@param playerController - player controller
-    *@param collider - other collider which entered in collision with the character
+    *@param collider - trigger zone collider in which the character is staying
     */
-    public void OnPlayerTriggerEnter(object sender, CharacterController playerController, Collider collider)
+    public void OnPlayerTriggerInside(object sender, CharacterController playerController, Collider collider)
     {
         // search for entered room and activate the matching camera
-        if (collider.tag == "Room1")
+        if (!m_Camera1.enabled && collider.tag == "Room1")
         {
             m_Camera1.enabled = true;
             m_Camera2.enabled = false;
             m_Camera3.enabled = false;
         }
         else
-        if (collider.tag == "Room2")
+        if (!m_Camera2.enabled && collider.tag == "Room2")
         {
             m_Camera1.enabled = false;
             m_Camera2.enabled = true;
             m_Camera3.enabled = false;
         }
         else
-        if (collider.tag == "Room3")
+        if (!m_Camera3.enabled && collider.tag == "Room3")
         {
             m_Camera1.enabled = false;
             m_Camera2.enabled = false;

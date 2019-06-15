@@ -9,12 +9,12 @@ public class GS_Player : MonoBehaviour
     #region Public delegates
 
     /**
-    * Notifies the character entered in a new trigger zone
+    * Called while the character stays inside a trigger zone
     *@param sender - event sender
     *@param playerController - player controller
-    *@param collider - other collider which entered in collision with the character
+    *@param collider - trigger zone collider in which the character is staying
     */
-    public delegate void OnPlayerTriggerEnterEvent(object sender, CharacterController playerController, Collider collider);
+    public delegate void OnTriggerInsideEvent(object sender, CharacterController playerController, Collider collider);
 
     #endregion
 
@@ -39,9 +39,9 @@ public class GS_Player : MonoBehaviour
     #region Public properties
 
     /**
-    * Gets or sets the OnPlayerTriggerEnter event
+    * Gets or sets the OnTriggerInside event
     */
-    public OnPlayerTriggerEnterEvent OnPlayerTriggerEnter { get; set; }
+    public OnTriggerInsideEvent OnTriggerInside { get; set; }
 
     #endregion
 
@@ -70,15 +70,15 @@ public class GS_Player : MonoBehaviour
     }
 
     /**
-    * Called every time the character enters in a new trigger zone
-    *@param other - other collider which entered in collision with the character
+    * Called while the character stays inside a trigger zone
+    *@param other - trigger zone collider in which the character is staying
     */
-    void OnTriggerEnter(Collider other)
+    void OnTriggerStay(Collider other)
     {
-        if (OnPlayerTriggerEnter == null)
+        if (OnTriggerInside == null)
             return;
 
-        OnPlayerTriggerEnter(this, m_CharacterController, other);
+        OnTriggerInside(this, m_CharacterController, other);
     }
 
     /**
