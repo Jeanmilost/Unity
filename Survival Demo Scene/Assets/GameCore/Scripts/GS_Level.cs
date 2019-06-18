@@ -111,25 +111,40 @@ public class GS_Level : MonoBehaviour
     public void OnPlayerTriggerInside(object sender, CharacterController playerController, Collider collider)
     {
         // search for entered room and activate the matching camera
-        if (!m_Camera1.enabled && collider.tag == "Room1")
+        if (collider.tag == "Room1")
         {
-            m_Camera1.enabled = true;
-            m_Camera2.enabled = false;
-            m_Camera3.enabled = false;
+            // is first camera enabled?
+            if (!m_Camera1.enabled)
+            {
+                // enable it and disable others
+                m_Camera1.enabled = true;
+                m_Camera2.enabled = false;
+                m_Camera3.enabled = false;
+            }
         }
         else
-        if (!m_Camera2.enabled && collider.tag == "Room2")
+        if (collider.tag == "Room2")
         {
-            m_Camera1.enabled = false;
-            m_Camera2.enabled = true;
-            m_Camera3.enabled = false;
+            // is second camera enabled?
+            if (!m_Camera2.enabled)
+            {
+                // enable it and disable others
+                m_Camera1.enabled = false;
+                m_Camera2.enabled = true;
+                m_Camera3.enabled = false;
+            }
         }
         else
-        if (!m_Camera3.enabled && collider.tag == "Room3")
+        if (collider.tag == "Room3")
         {
-            m_Camera1.enabled = false;
-            m_Camera2.enabled = false;
-            m_Camera3.enabled = true;
+            // is third camera enabled?
+            if (!m_Camera3.enabled)
+            {
+                // enable it and disable others
+                m_Camera1.enabled = false;
+                m_Camera2.enabled = false;
+                m_Camera3.enabled = true;
+            }
         }
     }
 
