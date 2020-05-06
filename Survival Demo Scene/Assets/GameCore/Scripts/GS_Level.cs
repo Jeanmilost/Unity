@@ -11,10 +11,12 @@ public class GS_Level : MonoBehaviour
     private GameObject m_Room1;
     private GameObject m_Room2;
     private GameObject m_Room3;
+    private GameObject m_Room4;
     private GameObject m_Laure;
     private Camera     m_Camera1;
     private Camera     m_Camera2;
     private Camera     m_Camera3;
+    private Camera     m_Camera4;
     private GS_Player  m_Player;
     private bool       m_CursorLocked;
 
@@ -31,24 +33,29 @@ public class GS_Level : MonoBehaviour
         m_Room1 = GameObject.Find("Room1");
         m_Room2 = GameObject.Find("Room2");
         m_Room3 = GameObject.Find("Room3");
+        m_Room4 = GameObject.Find("Room4");
 
         Debug.Assert(m_Room1);
         Debug.Assert(m_Room2);
         Debug.Assert(m_Room3);
+        Debug.Assert(m_Room4);
 
         // get the cameras
         m_Camera1 = m_Room1.GetComponentInChildren<Camera>();
         m_Camera2 = m_Room2.GetComponentInChildren<Camera>();
         m_Camera3 = m_Room3.GetComponentInChildren<Camera>();
+        m_Camera4 = m_Room4.GetComponentInChildren<Camera>();
 
         Debug.Assert(m_Camera1);
         Debug.Assert(m_Camera2);
         Debug.Assert(m_Camera3);
+        Debug.Assert(m_Camera4);
 
         // update camera status
-        m_Camera1.enabled = true;
+        m_Camera1.enabled = false;//true;//FIXME
         m_Camera2.enabled = false;
         m_Camera3.enabled = false;
+        m_Camera4.enabled = true;
 
         // get the player character
         m_Laure = GameObject.Find("Laure");
@@ -110,6 +117,7 @@ public class GS_Level : MonoBehaviour
     */
     public void OnPlayerTriggerInside(object sender, CharacterController playerController, Collider collider)
     {
+        return;//REM FIXME
         // search for entered room and activate the matching camera
         if (collider.tag == "Room1")
         {
