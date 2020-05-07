@@ -7,6 +7,8 @@ TagManager:
   - Room1
   - Room2
   - Room3
+  - Room4
+  - Interlude
   layers:
   - Default
   - TransparentFX
@@ -17,7 +19,7 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
+  - Interlude
   - 
   - 
   - 

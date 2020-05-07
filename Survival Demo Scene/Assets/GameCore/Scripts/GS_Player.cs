@@ -32,7 +32,7 @@ public class GS_Player : MonoBehaviour
     private Animator            m_Animator;
     private AudioSource         m_FootSteps;
     private Vector3             m_MoveDirection = Vector3.zero;
-    private float               m_Angle = 90.0f;
+    private float               m_Angle         = 90.0f;
 
     #endregion
 

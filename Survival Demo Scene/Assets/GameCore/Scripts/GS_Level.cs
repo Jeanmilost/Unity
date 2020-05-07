@@ -52,10 +52,10 @@ public class GS_Level : MonoBehaviour
         Debug.Assert(m_Camera4);
 
         // update camera status
-        m_Camera1.enabled = false;//true;//FIXME
+        m_Camera1.enabled = true;//false;//true;//FIXME
         m_Camera2.enabled = false;
         m_Camera3.enabled = false;
-        m_Camera4.enabled = true;
+        m_Camera4.enabled = false;//true;
 
         // get the player character
         m_Laure = GameObject.Find("Laure");
@@ -117,7 +117,7 @@ public class GS_Level : MonoBehaviour
     */
     public void OnPlayerTriggerInside(object sender, CharacterController playerController, Collider collider)
     {
-        return;//REM FIXME
+        //return;//REM FIXME
         // search for entered room and activate the matching camera
         if (collider.tag == "Room1")
         {
@@ -128,6 +128,7 @@ public class GS_Level : MonoBehaviour
                 m_Camera1.enabled = true;
                 m_Camera2.enabled = false;
                 m_Camera3.enabled = false;
+                m_Camera4.enabled = false;
             }
         }
         else
@@ -140,6 +141,7 @@ public class GS_Level : MonoBehaviour
                 m_Camera1.enabled = false;
                 m_Camera2.enabled = true;
                 m_Camera3.enabled = false;
+                m_Camera4.enabled = false;
             }
         }
         else
@@ -152,7 +154,16 @@ public class GS_Level : MonoBehaviour
                 m_Camera1.enabled = false;
                 m_Camera2.enabled = false;
                 m_Camera3.enabled = true;
+                m_Camera4.enabled = false;
             }
+        }
+        else
+        if (collider.tag == "Room4")
+        {
+            m_Camera1.enabled = false;
+            m_Camera2.enabled = false;
+            m_Camera3.enabled = false;
+            m_Camera4.enabled = true;
         }
     }
 
