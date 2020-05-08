@@ -24,7 +24,7 @@ public class GS_Message : MonoBehaviour
     #region Public properties
 
     /**
-    * Gets or sets if the key was picked up
+    * Gets or sets the user message
     */
     public string Message
     { 

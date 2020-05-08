@@ -3,14 +3,26 @@ using UnityEngine.AI;
 
 public class GS_Zombie : MonoBehaviour
 {
-    public Transform   m_Target;
+    #region Public members
+
+    public Transform m_Target;
+
+    #endregion
+
+    #region Private members
 
     private Animator     m_Animator;
     private NavMeshAgent m_Agent;
     private AudioSource  m_Breath;
     private AudioSource  m_FootSteps;
 
-    // Start is called before the first frame update
+    #endregion
+
+    #region Private functions
+
+    /**
+    * Starts the script
+    */
     void Start()
     {
         Debug.Assert(m_Target);
@@ -34,10 +46,14 @@ public class GS_Zombie : MonoBehaviour
         Debug.Assert(m_FootSteps);
     }
 
-    // Update is called once per frame
+    /**
+    * Updates the scene (synchronous, once per frame)
+    */
     void Update()
     {
         m_Animator.SetBool("isMoving", true);
         m_Agent.SetDestination(m_Target.position);
     }
+
+    #endregion
 }

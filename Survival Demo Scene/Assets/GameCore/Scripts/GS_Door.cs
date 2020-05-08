@@ -8,14 +8,16 @@ public class GS_Door : MonoBehaviour
 {
     #region Private members
 
-    private GameObject  m_Key;
-    private GameObject  m_Message;
-    private GS_Key      m_KeyManager;
-    private GS_Message  m_MessageManager;
-    private AudioSource m_KeyLock;
-    private AudioSource m_KeyUnlock;
-    private AudioSource m_OpenDoor;
-    private bool        m_Unlocked;
+    private GameObject   m_Key;
+    private GameObject   m_Message;
+    private GameObject   m_Interlude;
+    private GS_Key       m_KeyManager;
+    private GS_Message   m_MessageManager;
+    private GS_Interlude m_InterludeManager;
+    private AudioSource  m_KeyLock;
+    private AudioSource  m_KeyUnlock;
+    private AudioSource  m_OpenDoor;
+    private bool         m_Unlocked;
 
     #endregion
 
@@ -41,6 +43,14 @@ public class GS_Door : MonoBehaviour
         // get the message script
         m_MessageManager = m_Message.GetComponentInChildren<GS_Message>();
         Debug.Assert(m_MessageManager);
+
+        // get the door interlude object
+        m_Interlude = GameObject.Find("Interlude");
+        Debug.Assert(m_Interlude);
+
+        // get the door interlude script
+        m_InterludeManager = m_Interlude.GetComponentInChildren<GS_Interlude>();
+        Debug.Assert(m_InterludeManager);
 
         // get the children audio sources
         Component[] components = GetComponentsInChildren<AudioSource>();
@@ -110,6 +120,8 @@ public class GS_Door : MonoBehaviour
                 // go to other room
                 if (m_OpenDoor)
                     m_OpenDoor.Play();
+
+                m_InterludeManager.Run();
             }
         }
     }

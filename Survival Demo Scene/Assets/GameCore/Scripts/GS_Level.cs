@@ -8,17 +8,20 @@ public class GS_Level : MonoBehaviour
 {
     #region Private members
 
-    private GameObject m_Room1;
-    private GameObject m_Room2;
-    private GameObject m_Room3;
-    private GameObject m_Room4;
-    private GameObject m_Laure;
-    private Camera     m_Camera1;
-    private Camera     m_Camera2;
-    private Camera     m_Camera3;
-    private Camera     m_Camera4;
-    private GS_Player  m_Player;
-    private bool       m_CursorLocked;
+    private GameObject   m_Room1;
+    private GameObject   m_Room2;
+    private GameObject   m_Room3;
+    private GameObject   m_Room4;
+    private GameObject   m_InterludeScene;
+    private GameObject   m_Laure;
+    private Camera       m_Camera1;
+    private Camera       m_Camera2;
+    private Camera       m_Camera3;
+    private Camera       m_Camera4;
+    private Camera       m_Camera5;
+    private GS_Player    m_Player;
+    private GS_Interlude m_Interlude;
+    private bool         m_CursorLocked;
 
     #endregion
 
@@ -30,32 +33,37 @@ public class GS_Level : MonoBehaviour
     void Start()
     {
         // get the rooms
-        m_Room1 = GameObject.Find("Room1");
-        m_Room2 = GameObject.Find("Room2");
-        m_Room3 = GameObject.Find("Room3");
-        m_Room4 = GameObject.Find("Room4");
+        m_Room1          = GameObject.Find("Room1");
+        m_Room2          = GameObject.Find("Room2");
+        m_Room3          = GameObject.Find("Room3");
+        m_Room4          = GameObject.Find("Room4");
+        m_InterludeScene = GameObject.Find("Interlude");
 
         Debug.Assert(m_Room1);
         Debug.Assert(m_Room2);
         Debug.Assert(m_Room3);
         Debug.Assert(m_Room4);
+        Debug.Assert(m_InterludeScene);
 
         // get the cameras
         m_Camera1 = m_Room1.GetComponentInChildren<Camera>();
         m_Camera2 = m_Room2.GetComponentInChildren<Camera>();
         m_Camera3 = m_Room3.GetComponentInChildren<Camera>();
         m_Camera4 = m_Room4.GetComponentInChildren<Camera>();
+        m_Camera5 = m_InterludeScene.GetComponentInChildren<Camera>();
 
         Debug.Assert(m_Camera1);
         Debug.Assert(m_Camera2);
         Debug.Assert(m_Camera3);
         Debug.Assert(m_Camera4);
+        Debug.Assert(m_Camera5);
 
         // update camera status
         m_Camera1.enabled = true;//false;//true;//FIXME
         m_Camera2.enabled = false;
         m_Camera3.enabled = false;
         m_Camera4.enabled = false;//true;
+        m_Camera5.enabled = false;
 
         // get the player character
         m_Laure = GameObject.Find("Laure");
@@ -66,9 +74,15 @@ public class GS_Level : MonoBehaviour
         Debug.Assert(m_Player);
         m_Player.OnTriggerInside = OnPlayerTriggerInside;
 
+        // get the door interlude script
+        m_Interlude = m_InterludeScene.GetComponentInChildren<GS_Interlude>();
+        Debug.Assert(m_Interlude);
+
         // lock the cursor
         LockCursor(true);
         m_CursorLocked = true;
+
+        //REM m_Interlude.Run();
     }
 
     /**
@@ -118,6 +132,17 @@ public class GS_Level : MonoBehaviour
     public void OnPlayerTriggerInside(object sender, CharacterController playerController, Collider collider)
     {
         //return;//REM FIXME
+
+        // disable all the camera if interlude is running
+        if (m_Interlude.IsRunning)
+        {
+            m_Camera1.enabled = false;
+            m_Camera2.enabled = false;
+            m_Camera3.enabled = false;
+            m_Camera4.enabled = false;
+            return;
+        }
+
         // search for entered room and activate the matching camera
         if (collider.tag == "Room1")
         {
