@@ -81,8 +81,6 @@ public class GS_Level : MonoBehaviour
         // lock the cursor
         LockCursor(true);
         m_CursorLocked = true;
-
-        //REM m_Interlude.Run();
     }
 
     /**

@@ -37,11 +37,11 @@ public class GS_Zombie : MonoBehaviour
         Component[] components = GetComponentsInChildren<AudioSource>();
         Debug.Assert(components.Length == 2);
 
-        // get the key lock audio source
+        // get the breath audio source
         m_Breath = components[0] as AudioSource;
         Debug.Assert(m_Breath);
 
-        // get the key lock audio source
+        // get the footsteps audio source
         m_FootSteps = components[1] as AudioSource;
         Debug.Assert(m_FootSteps);
     }
