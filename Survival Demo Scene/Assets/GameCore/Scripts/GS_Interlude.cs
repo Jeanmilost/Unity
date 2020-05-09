@@ -8,6 +8,7 @@ public class GS_Interlude : MonoBehaviour
 {
     #region Private members
 
+    private GameObject  m_Level;
     private GameObject  m_InterludeScene;
     private GameObject  m_Door;
     private Camera      m_Camera;
@@ -15,7 +16,9 @@ public class GS_Interlude : MonoBehaviour
     private Animator    m_CameraAnimator;
     private AudioSource m_DoorOpening;
     private AudioSource m_FootSteps;
-    private bool        m_Running;
+    private GS_Level    m_LevelManager;
+    private string      m_SourceTag;
+    private bool        m_IsRunning;
 
     #endregion
 
@@ -24,8 +27,13 @@ public class GS_Interlude : MonoBehaviour
     /**
     * Gets if the interlude is running
     */
-    public bool IsRunning { get; } = false;
-    public bool Running   { get => m_Running; }
+    public bool IsRunning
+    {
+        get
+        {
+            return m_IsRunning;
+        }
+    }
 
     #endregion
 
@@ -33,14 +41,14 @@ public class GS_Interlude : MonoBehaviour
 
     /**
     * Runs the door interlude animation
+    *@param sourceTag - the source room where the player was when the door was opened
     */
-    public void Run()
+    public void Run(string sourceTag)
     {
-        // notify that animation is running
-        m_Running = true;
+        m_SourceTag = sourceTag;
 
-        // show the scene
-        m_Camera.enabled = true;
+        // notify that animation is running
+        m_IsRunning = true;
 
         // start the animations
         m_DoorAnimator.SetBool("startAnim", true);
@@ -80,9 +88,6 @@ public class GS_Interlude : MonoBehaviour
         // stop the sound
         m_FootSteps.Stop();
 
-        // disable the camera
-        m_Camera.enabled = false;
-
         // reset the start animation parameters
         m_DoorAnimator.SetBool("startAnim", false);
         m_CameraAnimator.SetBool("startAnim", false);
@@ -91,8 +96,10 @@ public class GS_Interlude : MonoBehaviour
         m_DoorAnimator.Rebind();
         m_CameraAnimator.Rebind();
 
+        m_LevelManager.OnPlayerEnteredNewRoom(m_SourceTag);
+
         // notify that animation stopped
-        m_Running = false;
+        m_IsRunning = false;
     }
 
     #endregion
@@ -111,6 +118,14 @@ public class GS_Interlude : MonoBehaviour
         // get the interlude camera
         m_Camera = m_InterludeScene.GetComponentInChildren<Camera>();
         Debug.Assert(m_Camera);
+
+        // get the player character
+        m_Level = GameObject.Find("Level");
+        Debug.Assert(m_Level);
+
+        // get the player character script
+        m_LevelManager = m_Level.GetComponentInChildren<GS_Level>();
+        Debug.Assert(m_LevelManager);
 
         // get the children animators (interlude should own 2 animations)
         Component[] animators = GetComponentsInChildren<Animator>();

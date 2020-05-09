@@ -28,9 +28,11 @@ public class GS_Player : MonoBehaviour
 
     #region Private members
 
+    private GameObject          m_Interlude;
     private CharacterController m_CharacterController;
     private Animator            m_Animator;
     private AudioSource         m_FootSteps;
+    private GS_Interlude        m_InterludeManager;
     private Vector3             m_MoveDirection = Vector3.zero;
     private float               m_Angle         = 90.0f;
 
@@ -45,6 +47,23 @@ public class GS_Player : MonoBehaviour
 
     #endregion
 
+    #region Public functions
+
+    /**
+    * Sets the player position and direction
+    *@param pos - the player position
+    *@param dir - the player direction
+    */
+    public void SetPlayerPosAndDir(Vector3 pos, Vector3 dir)
+    {
+        m_CharacterController.enabled               = false;
+        m_CharacterController.transform.position    = pos;
+        m_CharacterController.transform.eulerAngles = dir;
+        m_CharacterController.enabled               = true;
+    }
+
+    #endregion
+
     #region Private functions
 
     /**
@@ -52,6 +71,15 @@ public class GS_Player : MonoBehaviour
     */
     void Start()
     {
+        // get the door interlude object
+        m_Interlude = GameObject.Find("Interlude");
+        Debug.Assert(m_Interlude);
+
+        // get the door interlude script
+        m_InterludeManager = m_Interlude.GetComponentInChildren<GS_Interlude>();
+        Debug.Assert(m_InterludeManager);
+
+        // get the player children objects
         m_CharacterController = GetComponent<CharacterController>();
         m_Animator            = GetComponent<Animator>();
         m_FootSteps           = GetComponentInChildren<AudioSource>();
@@ -86,9 +114,14 @@ public class GS_Player : MonoBehaviour
     */
     void MoveCharacter()
     {
+        Vector2 axis;
+
         // get axis moved by the player (A, W, S, D or left/top/right/bottom arrows). Limit the vertical axis to a value
         // between 0 and 1, thus the player may only move forward
-        Vector2 axis = new Vector2(Input.GetAxis("Horizontal"), Mathf.Clamp01(Input.GetAxis("Vertical")));
+        if (!m_InterludeManager.IsRunning)
+            axis = new Vector2(Input.GetAxis("Horizontal"), Mathf.Clamp01(Input.GetAxis("Vertical")));
+        else
+            axis = new Vector2(0.0f, 0.0f);
 
         // calculate angle at which player is looking
         m_Angle = (m_Angle + (m_RotationSpeed * axis.x * Time.deltaTime)) % 360.0f;

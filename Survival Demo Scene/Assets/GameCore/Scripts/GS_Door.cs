@@ -116,12 +116,13 @@ public class GS_Door : MonoBehaviour
                 m_Unlocked = true;
             }
             else
+            if (!m_InterludeManager.IsRunning)
             {
                 // go to other room
                 if (m_OpenDoor)
                     m_OpenDoor.Play();
 
-                m_InterludeManager.Run();
+                m_InterludeManager.Run(tag);
             }
         }
     }

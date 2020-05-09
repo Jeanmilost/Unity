@@ -25,6 +25,30 @@ public class GS_Level : MonoBehaviour
 
     #endregion
 
+    #region Public functions
+
+    /**
+    * Called when the player entered inside a new room
+    *@param sourceTag - the source room where the player was when the door was opened
+    */
+    public void OnPlayerEnteredNewRoom(string sourceTag)
+    {
+        Debug.Log(sourceTag);
+
+        if (sourceTag == "Room3")
+        {
+            m_Player.SetPlayerPosAndDir(new Vector3(2.8f, 0.075f, -15.0f), new Vector3(0.0f, 0.0f, 0.0f));
+            Debug.Log("=> In labo");
+        }
+        else
+        {
+            m_Player.SetPlayerPosAndDir(new Vector3(-11.75f, 0.075f, -12.4f), new Vector3(0.0f, 180.0f, 0.0f));
+            Debug.Log("=> In corridor");
+        }
+    }
+
+    #endregion
+
     #region Private functions
 
     /**
@@ -59,10 +83,10 @@ public class GS_Level : MonoBehaviour
         Debug.Assert(m_Camera5);
 
         // update camera status
-        m_Camera1.enabled = true;//false;//true;//FIXME
+        m_Camera1.enabled = true;
         m_Camera2.enabled = false;
         m_Camera3.enabled = false;
-        m_Camera4.enabled = false;//true;
+        m_Camera4.enabled = false;
         m_Camera5.enabled = false;
 
         // get the player character
@@ -129,8 +153,6 @@ public class GS_Level : MonoBehaviour
     */
     public void OnPlayerTriggerInside(object sender, CharacterController playerController, Collider collider)
     {
-        //return;//REM FIXME
-
         // disable all the camera if interlude is running
         if (m_Interlude.IsRunning)
         {
@@ -138,6 +160,7 @@ public class GS_Level : MonoBehaviour
             m_Camera2.enabled = false;
             m_Camera3.enabled = false;
             m_Camera4.enabled = false;
+            m_Camera5.enabled = true;
             return;
         }
 
@@ -152,6 +175,7 @@ public class GS_Level : MonoBehaviour
                 m_Camera2.enabled = false;
                 m_Camera3.enabled = false;
                 m_Camera4.enabled = false;
+                m_Camera5.enabled = false;
             }
         }
         else
@@ -165,6 +189,7 @@ public class GS_Level : MonoBehaviour
                 m_Camera2.enabled = true;
                 m_Camera3.enabled = false;
                 m_Camera4.enabled = false;
+                m_Camera5.enabled = false;
             }
         }
         else
@@ -178,6 +203,7 @@ public class GS_Level : MonoBehaviour
                 m_Camera2.enabled = false;
                 m_Camera3.enabled = true;
                 m_Camera4.enabled = false;
+                m_Camera5.enabled = false;
             }
         }
         else
@@ -187,6 +213,7 @@ public class GS_Level : MonoBehaviour
             m_Camera2.enabled = false;
             m_Camera3.enabled = false;
             m_Camera4.enabled = true;
+            m_Camera5.enabled = false;
         }
     }
 
