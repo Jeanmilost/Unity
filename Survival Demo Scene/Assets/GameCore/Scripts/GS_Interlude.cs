@@ -6,19 +6,29 @@
 */
 public class GS_Interlude : MonoBehaviour
 {
+    #region Public delegates
+
+    /**
+    * Called when the player entered inside a new room
+    *@param sender - event sender
+    *@param sourceTag - the tag of the room where the player was when the door was opened
+    */
+    public delegate void OnPlayerEnteredNewRoomEvent(object sender, string sourceTag);
+
+    #endregion
+
     #region Private members
 
-    private GameObject  m_Level;
-    private GameObject  m_InterludeScene;
-    private GameObject  m_Door;
-    private Camera      m_Camera;
-    private Animator    m_DoorAnimator;
-    private Animator    m_CameraAnimator;
-    private AudioSource m_DoorOpening;
-    private AudioSource m_FootSteps;
-    private GS_Level    m_LevelManager;
-    private string      m_SourceTag;
-    private bool        m_IsRunning;
+    private GameObject          m_InterludeScene;
+    private GameObject          m_Door;
+    private Camera              m_Camera;
+    private Animator            m_DoorAnimator;
+    private Animator            m_CameraAnimator;
+    private AudioSource         m_DoorOpening;
+    private AudioSource         m_FootSteps;
+    private GS_CameraAnimEvents m_CameraAnimEvents;
+    private string              m_SourceTag;
+    private bool                m_IsRunning;
 
     #endregion
 
@@ -34,6 +44,11 @@ public class GS_Interlude : MonoBehaviour
             return m_IsRunning;
         }
     }
+
+    /**
+    * Gets or sets the OnPlayerEnteredNewRoom event
+    */
+    public OnPlayerEnteredNewRoomEvent OnPlayerEnteredNewRoom { get; set; }
 
     #endregion
 
@@ -57,16 +72,18 @@ public class GS_Interlude : MonoBehaviour
 
     /**
     * Called when walking animation is starting
+    *@param sender - event sender
     */
-    public void OnStartWalk()
+    public void OnStartWalk(object sender)
     {
         m_FootSteps.Play();
     }
 
     /**
     * Called when door is reached
+    *@param sender - event sender
     */
-    public void OnDoorReached()
+    public void OnDoorReached(object sender)
     {
         m_FootSteps.Stop();
         m_DoorOpening.Play();
@@ -74,16 +91,18 @@ public class GS_Interlude : MonoBehaviour
 
     /**
     * Called when door is opened
+    *@param sender - event sender
     */
-    public void OnDoorOpened()
+    public void OnDoorOpened(object sender)
     {
         m_FootSteps.Play();
     }
 
     /**
     * Called when walking animation is stopped
+    *@param sender - event sender
     */
-    public void OnStopWalk()
+    public void OnStopWalk(object sender)
     {
         // stop the sound
         m_FootSteps.Stop();
@@ -96,7 +115,8 @@ public class GS_Interlude : MonoBehaviour
         m_DoorAnimator.Rebind();
         m_CameraAnimator.Rebind();
 
-        m_LevelManager.OnPlayerEnteredNewRoom(m_SourceTag);
+        // notify that the player entered in a new room
+        OnPlayerEnteredNewRoom?.Invoke(this, m_SourceTag);
 
         // notify that animation stopped
         m_IsRunning = false;
@@ -119,13 +139,13 @@ public class GS_Interlude : MonoBehaviour
         m_Camera = m_InterludeScene.GetComponentInChildren<Camera>();
         Debug.Assert(m_Camera);
 
-        // get the player character
-        m_Level = GameObject.Find("Level");
-        Debug.Assert(m_Level);
-
-        // get the player character script
-        m_LevelManager = m_Level.GetComponentInChildren<GS_Level>();
-        Debug.Assert(m_LevelManager);
+        // get the camera animation events
+        m_CameraAnimEvents = m_InterludeScene.GetComponentInChildren<GS_CameraAnimEvents>();
+        Debug.Assert(m_CameraAnimEvents);
+        m_CameraAnimEvents.OnStartWalk   = OnStartWalk;
+        m_CameraAnimEvents.OnDoorReached = OnDoorReached;
+        m_CameraAnimEvents.OnDoorOpened  = OnDoorOpened;
+        m_CameraAnimEvents.OnStopWalk    = OnStopWalk;
 
         // get the children animators (interlude should own 2 animations)
         Component[] animators = GetComponentsInChildren<Animator>();

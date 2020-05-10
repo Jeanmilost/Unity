@@ -29,9 +29,10 @@ public class GS_Level : MonoBehaviour
 
     /**
     * Called when the player entered inside a new room
+    *@param sender - event sender
     *@param sourceTag - the source room where the player was when the door was opened
     */
-    public void OnPlayerEnteredNewRoom(string sourceTag)
+    public void OnPlayerEnteredNewRoom(object sender, string sourceTag)
     {
         Debug.Log(sourceTag);
 
@@ -57,17 +58,24 @@ public class GS_Level : MonoBehaviour
     void Start()
     {
         // get the rooms
-        m_Room1          = GameObject.Find("Room1");
-        m_Room2          = GameObject.Find("Room2");
-        m_Room3          = GameObject.Find("Room3");
-        m_Room4          = GameObject.Find("Room4");
-        m_InterludeScene = GameObject.Find("Interlude");
+        m_Room1 = GameObject.Find("Room1");
+        m_Room2 = GameObject.Find("Room2");
+        m_Room3 = GameObject.Find("Room3");
+        m_Room4 = GameObject.Find("Room4");
 
         Debug.Assert(m_Room1);
         Debug.Assert(m_Room2);
         Debug.Assert(m_Room3);
         Debug.Assert(m_Room4);
+
+        // get the interlude scene
+        m_InterludeScene = GameObject.Find("Interlude");
         Debug.Assert(m_InterludeScene);
+
+        // get the door interlude script
+        m_Interlude = m_InterludeScene.GetComponentInChildren<GS_Interlude>();
+        Debug.Assert(m_Interlude);
+        m_Interlude.OnPlayerEnteredNewRoom = OnPlayerEnteredNewRoom;
 
         // get the cameras
         m_Camera1 = m_Room1.GetComponentInChildren<Camera>();
@@ -97,10 +105,6 @@ public class GS_Level : MonoBehaviour
         m_Player = m_Laure.GetComponentInChildren<GS_Player>();
         Debug.Assert(m_Player);
         m_Player.OnTriggerInside = OnPlayerTriggerInside;
-
-        // get the door interlude script
-        m_Interlude = m_InterludeScene.GetComponentInChildren<GS_Interlude>();
-        Debug.Assert(m_Interlude);
 
         // lock the cursor
         LockCursor(true);

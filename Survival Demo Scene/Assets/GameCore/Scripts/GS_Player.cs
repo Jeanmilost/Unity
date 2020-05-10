@@ -103,10 +103,7 @@ public class GS_Player : MonoBehaviour
     */
     void OnTriggerStay(Collider other)
     {
-        if (OnTriggerInside == null)
-            return;
-
-        OnTriggerInside(this, m_CharacterController, other);
+        OnTriggerInside?.Invoke(this, m_CharacterController, other);
     }
 
     /**
