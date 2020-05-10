@@ -12,7 +12,8 @@ public class GS_Zombie : MonoBehaviour
     public enum IEMachineState
     {
         IE_MS_Idle,
-        IE_MS_Chasing
+        IE_MS_Chasing,
+        IE_MS_Attacking
     };
 
     public Transform m_Target;
@@ -103,11 +104,15 @@ public class GS_Zombie : MonoBehaviour
     */
     void Update()
     {
+        if (Vector3.Distance(m_Target.position, transform.position) < 1.0f)
+            MachineState = IEMachineState.IE_MS_Attacking;
+
         // execute the running action
         switch (m_MachineState)
         {
-            case IEMachineState.IE_MS_Chasing: ExecuteChasing(); break;
-            default:                           ExecuteIdle();    break;
+            case IEMachineState.IE_MS_Chasing:   ExecuteChasing();   break;
+            case IEMachineState.IE_MS_Attacking: ExecuteAttacking(); break;
+            default:                             ExecuteIdle();      break;
         }
 
         // reset the machine state changed flag after having executed the current action at least once
@@ -148,6 +153,12 @@ public class GS_Zombie : MonoBehaviour
         if (!m_FootSteps.isPlaying)
             m_FootSteps.Play();
     }
+
+    /**
+    * Executes the attacking action
+    */
+    void ExecuteAttacking()
+    {}
 
     #endregion
 }
