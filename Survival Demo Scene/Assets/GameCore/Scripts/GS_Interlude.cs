@@ -9,6 +9,13 @@ public class GS_Interlude : MonoBehaviour
     #region Public delegates
 
     /**
+    * Called when the player is opening a door
+    *@param sender - event sender
+    *@param sourceTag - the source room where the player was when the door was opened
+    */
+    public delegate void OnPlayerOpeningDoorEvent(object sender, string sourceTag);
+
+    /**
     * Called when the player entered inside a new room
     *@param sender - event sender
     *@param sourceTag - the tag of the room where the player was when the door was opened
@@ -48,6 +55,11 @@ public class GS_Interlude : MonoBehaviour
     /**
     * Gets or sets the OnPlayerEnteredNewRoom event
     */
+    public OnPlayerOpeningDoorEvent OnPlayerOpeningDoor { get; set; }
+
+    /**
+    * Gets or sets the OnPlayerEnteredNewRoom event
+    */
     public OnPlayerEnteredNewRoomEvent OnPlayerEnteredNewRoom { get; set; }
 
     #endregion
@@ -64,6 +76,9 @@ public class GS_Interlude : MonoBehaviour
 
         // notify that animation is running
         m_IsRunning = true;
+
+        // notify that the player started to open the door
+        OnPlayerOpeningDoor?.Invoke(this, m_SourceTag);
 
         // start the animations
         m_DoorAnimator.SetBool("startAnim", true);

@@ -1,21 +1,25 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
+/**
+* This class manages the zombie character AI, gestures and events
+* @author Jean-Milost Reymond
+*/
 public class GS_Zombie : MonoBehaviour
 {
     #region Public members
+
+    public enum IEMachineState
+    {
+        IE_MS_Idle,
+        IE_MS_Chasing
+    };
 
     public Transform m_Target;
 
     #endregion
 
     #region Private members
-
-    enum IEMachineState
-    {
-        IE_MS_Idle,
-        IE_MS_Walking
-    };
 
     private GameObject     m_Room4;
     private GameObject     m_InterludeScene;
@@ -30,7 +34,24 @@ public class GS_Zombie : MonoBehaviour
 
     #endregion
 
-    #region Public functions
+    #region Public properties
+
+    /**
+    * Gets or sets the machine state
+    */
+    public IEMachineState MachineState
+    {
+        get
+        {
+            return m_MachineState;
+        }
+        
+        set
+        {
+            m_MachineState        = value;
+            m_MachineStateChanged = true;
+        }
+    }
 
     #endregion
 
@@ -82,56 +103,46 @@ public class GS_Zombie : MonoBehaviour
     */
     void Update()
     {
-        if (m_Camera4.enabled && !m_Interlude.IsRunning)
-        {
-            if (m_MachineState != IEMachineState.IE_MS_Walking)
-            {
-                m_MachineState        = IEMachineState.IE_MS_Walking;
-                m_MachineStateChanged = true;
-            }
-            else
-                m_MachineStateChanged = false;
-        }
-        else
-        {
-            if (m_MachineState != IEMachineState.IE_MS_Idle)
-            {
-                m_MachineState = m_MachineState = IEMachineState.IE_MS_Idle;
-                m_MachineStateChanged = true;
-            }
-            else
-                m_MachineStateChanged = false;
-        }
-
+        // execute the running action
         switch (m_MachineState)
         {
-            case IEMachineState.IE_MS_Idle:    ExecuteIdle();            break;
-            case IEMachineState.IE_MS_Walking: ExecuteWalkingToPlayer(); break;
+            case IEMachineState.IE_MS_Chasing: ExecuteChasing(); break;
+            default:                           ExecuteIdle();    break;
         }
+
+        // reset the machine state changed flag after having executed the current action at least once
+        m_MachineStateChanged = false;
     }
 
+    /**
+    * Executes the idle action
+    */
     void ExecuteIdle()
     {
+        // stop the zombie on its current position
+        m_Agent.SetDestination(transform.position);
+
         // run the idle animation
         m_Animator.SetBool("isMoving", false);
-        m_Agent.updatePosition = false;
 
         // stop the footsteps sound
         if (m_FootSteps.isPlaying)
             m_FootSteps.Stop();
     }
 
-    void ExecuteWalkingToPlayer()
+    /**
+    * Executes the chasing action
+    */
+    void ExecuteChasing()
     {
         if (m_MachineStateChanged)
             m_Breath.Play();
 
-        // the agent destination is always the player
+        // make the zombie to chase the player
         m_Agent.SetDestination(m_Target.position);
 
         // run the walking animation
         m_Animator.SetBool("isMoving", true);
-        m_Agent.updatePosition = true;
 
         // play the footsteps sound
         if (!m_FootSteps.isPlaying)
