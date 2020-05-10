@@ -104,8 +104,11 @@ public class GS_Zombie : MonoBehaviour
     */
     void Update()
     {
-        if (Vector3.Distance(m_Target.position, transform.position) < 1.0f)
+        if (Vector3.Distance(m_Target.position, transform.position) < 2.0f)
             MachineState = IEMachineState.IE_MS_Attacking;
+        else
+        if (MachineState == IEMachineState.IE_MS_Attacking)
+            MachineState = IEMachineState.IE_MS_Chasing;
 
         // execute the running action
         switch (m_MachineState)
@@ -129,6 +132,7 @@ public class GS_Zombie : MonoBehaviour
 
         // run the idle animation
         m_Animator.SetBool("isMoving", false);
+        m_Animator.SetBool("isAttacking", false);
 
         // stop the footsteps sound
         if (m_FootSteps.isPlaying)
@@ -148,6 +152,7 @@ public class GS_Zombie : MonoBehaviour
 
         // run the walking animation
         m_Animator.SetBool("isMoving", true);
+        m_Animator.SetBool("isAttacking", false);
 
         // play the footsteps sound
         if (!m_FootSteps.isPlaying)
@@ -158,7 +163,18 @@ public class GS_Zombie : MonoBehaviour
     * Executes the attacking action
     */
     void ExecuteAttacking()
-    {}
+    {
+        // stop the zombie on its current position
+        m_Agent.SetDestination(transform.position);
+
+        // run the attacking animation
+        m_Animator.SetBool("isMoving", false);
+        m_Animator.SetBool("isAttacking", true);
+
+        // stop the footsteps sound
+        if (m_FootSteps.isPlaying)
+            m_FootSteps.Stop();
+    }
 
     #endregion
 }
