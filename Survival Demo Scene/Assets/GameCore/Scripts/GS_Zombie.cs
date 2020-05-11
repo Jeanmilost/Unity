@@ -104,14 +104,14 @@ public class GS_Zombie : MonoBehaviour
     */
     void Update()
     {
+        IEMachineState machineState = MachineState;
+
+        // if the zombie is close to the target, attack it
         if (Vector3.Distance(m_Target.position, transform.position) < 2.0f)
-            MachineState = IEMachineState.IE_MS_Attacking;
-        else
-        if (MachineState == IEMachineState.IE_MS_Attacking)
-            MachineState = IEMachineState.IE_MS_Chasing;
+            machineState = IEMachineState.IE_MS_Attacking;
 
         // execute the running action
-        switch (m_MachineState)
+        switch (machineState)
         {
             case IEMachineState.IE_MS_Chasing:   ExecuteChasing();   break;
             case IEMachineState.IE_MS_Attacking: ExecuteAttacking(); break;
