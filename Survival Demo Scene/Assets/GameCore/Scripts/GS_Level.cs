@@ -127,6 +127,8 @@ public class GS_Level : MonoBehaviour
         // get the zombie character script
         m_ZombieManager = m_Zombie.GetComponentInChildren<GS_Zombie>();
         Debug.Assert(m_ZombieManager);
+        m_ZombieManager.OnFirstAttackHit  = OnFirstAttackHit;
+        m_ZombieManager.OnSecondAttackHit = OnSecondAttackHit;
 
         // lock the cursor
         LockCursor(true);
@@ -241,6 +243,32 @@ public class GS_Level : MonoBehaviour
             m_Camera4.enabled = true;
             m_Camera5.enabled = false;
         }
+    }
+
+    /**
+    * Called when the first attack hit point is reached
+    *@param sender - event sender
+    *@param zombiePos - the zombie position
+    */
+    void OnFirstAttackHit(object sender, Transform zombiePos)
+    {
+        if (!m_PlayerManager)
+            return;
+
+        m_PlayerManager.CheckPlayerHitByZombie(zombiePos);
+    }
+
+    /**
+    * Called when the second attack hit point is reached
+    *@param sender - event sender
+    *@param zombiePos - the zombie position
+    */
+    void OnSecondAttackHit(object sender, Transform zombiePos)
+    {
+        if (!m_PlayerManager)
+            return;
+
+        m_PlayerManager.CheckPlayerHitByZombie(zombiePos);
     }
 
     #endregion

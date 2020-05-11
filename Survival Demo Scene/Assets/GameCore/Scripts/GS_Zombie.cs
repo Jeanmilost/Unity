@@ -7,6 +7,36 @@ using UnityEngine.AI;
 */
 public class GS_Zombie : MonoBehaviour
 {
+    #region Public delegates
+
+    /**
+    * Called when the first attack is starting
+    *@param sender - event sender
+    */
+    public delegate void OnStartFirstAttackEvent(object sender);
+
+    /**
+    * Called when the first attack hit point is reached
+    *@param sender - event sender
+    *@param zombiePos - the zombie position
+    */
+    public delegate void OnFirstAttackHitEvent(object sender, Transform zombiePos);
+
+    /**
+    * Called when the second attack is starting
+    *@param sender - event sender
+    */
+    public delegate void OnStartSecondAttackEvent(object sender);
+
+    /**
+    * Called when the second attack hit point is reached
+    *@param sender - event sender
+    *@param zombiePos - the zombie position
+    */
+    public delegate void OnSecondAttackHitEvent(object sender, Transform zombiePos);
+
+    #endregion
+
     #region Public members
 
     public enum IEMachineState
@@ -22,16 +52,17 @@ public class GS_Zombie : MonoBehaviour
 
     #region Private members
 
-    private GameObject     m_Room4;
     private GameObject     m_InterludeScene;
-    private Camera         m_Camera4;
     private Animator       m_Animator;
     private NavMeshAgent   m_Agent;
+    private AudioSource    m_ArmBeatingAir;
+    private AudioSource    m_Attacking;
     private AudioSource    m_Breath;
     private AudioSource    m_FootSteps;
     private GS_Interlude   m_Interlude;
     private IEMachineState m_MachineState = IEMachineState.IE_MS_Idle;
     private bool           m_MachineStateChanged;
+    private bool           m_AttackStarted;
 
     #endregion
 
@@ -46,12 +77,78 @@ public class GS_Zombie : MonoBehaviour
         {
             return m_MachineState;
         }
-        
+
         set
         {
             m_MachineState        = value;
             m_MachineStateChanged = true;
         }
+    }
+
+    /**
+    * Gets or sets the StartFirstAttack event
+    */
+    public OnStartFirstAttackEvent OnStartFirstAttack { get; set; }
+
+    /**
+    * Gets or sets the FirstAttackHit event
+    */
+    public OnFirstAttackHitEvent OnFirstAttackHit { get; set; }
+
+    /**
+    * Gets or sets the StartSecondAttack event
+    */
+    public OnStartSecondAttackEvent OnStartSecondAttack { get; set; }
+
+    /**
+    * Gets or sets the SecondAttackHit event
+    */
+    public OnSecondAttackHitEvent OnSecondAttackHit { get; set; }
+
+    #endregion
+
+    #region Public functions
+
+    /**
+    * Called when first attack is starting
+    *@param sender - event sender
+    */
+    public void StartFirstAttack()
+    {
+        m_ArmBeatingAir.Play();
+
+        OnStartFirstAttack?.Invoke(this);
+    }
+
+    /**
+    * Called when the first attack hit point is reached
+    *@param sender - event sender
+    *@param zombiePos - the zombie position
+    */
+    public void FirstAttackHit()
+    {
+        OnFirstAttackHit?.Invoke(this, transform);
+    }
+
+    /**
+    * Called when the second attack is starting
+    *@param sender - event sender
+    */
+    public void StartSecondAttack()
+    {
+        m_ArmBeatingAir.Play();
+
+        OnStartSecondAttack?.Invoke(this);
+    }
+
+    /**
+    * Called when the second attack hit point is reached
+    *@param sender - event sender
+    *@param zombiePos - the zombie position
+    */
+    public void SecondAttackHit()
+    {
+        OnSecondAttackHit?.Invoke(this, transform);
     }
 
     #endregion
@@ -64,13 +161,6 @@ public class GS_Zombie : MonoBehaviour
     void Start()
     {
         Debug.Assert(m_Target);
-
-        // get the room 4
-        m_Room4 = GameObject.Find("Room4");
-        Debug.Assert(m_Room4);
-
-        // get the room 4 camera
-        m_Camera4 = m_Room4.GetComponentInChildren<Camera>();
 
         // get the interlude scene
         m_InterludeScene = GameObject.Find("Interlude");
@@ -86,16 +176,24 @@ public class GS_Zombie : MonoBehaviour
         m_Agent = GetComponent<NavMeshAgent>();
         Debug.Assert(m_Agent);
 
-        // get the children audio sources (zombie should own 2 sounds)
+        // get the children audio sources (zombie should own 4 sounds)
         Component[] components = GetComponentsInChildren<AudioSource>();
-        Debug.Assert(components.Length == 2);
+        Debug.Assert(components.Length == 4);
+
+        // get the arm beating air audio source
+        m_ArmBeatingAir = components[0] as AudioSource;
+        Debug.Assert(m_ArmBeatingAir);
+
+        // get the attacking audio source
+        m_Attacking = components[1] as AudioSource;
+        Debug.Assert(m_Attacking);
 
         // get the breath audio source
-        m_Breath = components[0] as AudioSource;
+        m_Breath = components[2] as AudioSource;
         Debug.Assert(m_Breath);
 
         // get the footsteps audio source
-        m_FootSteps = components[1] as AudioSource;
+        m_FootSteps = components[3] as AudioSource;
         Debug.Assert(m_FootSteps);
     }
 
@@ -107,8 +205,16 @@ public class GS_Zombie : MonoBehaviour
         IEMachineState machineState = MachineState;
 
         // if the zombie is close to the target, attack it
-        if (Vector3.Distance(m_Target.position, transform.position) < 2.0f)
+        if (!m_Interlude.IsRunning && Vector3.Distance(m_Target.position, transform.position) < 1.5f)
+        {
+            if (!m_AttackStarted)
+            {
+                m_AttackStarted       = true;
+                m_MachineStateChanged = true;
+            }
+
             machineState = IEMachineState.IE_MS_Attacking;
+        }
 
         // execute the running action
         switch (machineState)
@@ -137,6 +243,10 @@ public class GS_Zombie : MonoBehaviour
         // stop the footsteps sound
         if (m_FootSteps.isPlaying)
             m_FootSteps.Stop();
+
+        // stop the attacking sound
+        if (m_Attacking.isPlaying)
+            m_Attacking.Stop();
     }
 
     /**
@@ -164,8 +274,12 @@ public class GS_Zombie : MonoBehaviour
     */
     void ExecuteAttacking()
     {
+        if (m_MachineStateChanged)
+            m_Attacking.Play();
+
         // stop the zombie on its current position
         m_Agent.SetDestination(transform.position);
+        transform.LookAt(m_Target);
 
         // run the attacking animation
         m_Animator.SetBool("isMoving", false);

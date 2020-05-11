@@ -32,6 +32,7 @@ public class GS_Player : MonoBehaviour
     private CharacterController m_CharacterController;
     private Animator            m_Animator;
     private AudioSource         m_FootSteps;
+    private AudioSource         m_Hit;
     private GS_Interlude        m_InterludeManager;
     private Vector3             m_MoveDirection = Vector3.zero;
     private float               m_Angle         = 90.0f;
@@ -62,6 +63,16 @@ public class GS_Player : MonoBehaviour
         m_CharacterController.enabled               = true;
     }
 
+    /**
+    * Checks if the player was hit by the zonbie
+    *@param zombiePos - the zombie position
+    */
+    public void CheckPlayerHitByZombie(Transform zombiePos)
+    {
+        if (Vector3.Distance(zombiePos.position, transform.position) < 1.5f)
+            m_Hit.Play();
+    }
+
     #endregion
 
     #region Private functions
@@ -79,14 +90,25 @@ public class GS_Player : MonoBehaviour
         m_InterludeManager = m_Interlude.GetComponentInChildren<GS_Interlude>();
         Debug.Assert(m_InterludeManager);
 
-        // get the player children objects
+        // get the player character controller
         m_CharacterController = GetComponent<CharacterController>();
-        m_Animator            = GetComponent<Animator>();
-        m_FootSteps           = GetComponentInChildren<AudioSource>();
-
         Debug.Assert(m_CharacterController);
+
+        // get the player animator
+        m_Animator = GetComponent<Animator>();
         Debug.Assert(m_Animator);
+
+        // get the children audio sources (player should own 2 sounds)
+        Component[] components = GetComponentsInChildren<AudioSource>();
+        Debug.Assert(components.Length == 2);
+
+        // get the footsteps audio source
+        m_FootSteps = components[0] as AudioSource;
         Debug.Assert(m_FootSteps);
+
+        // get the hit audio source
+        m_Hit = components[1] as AudioSource;
+        Debug.Assert(m_Hit);
     }
 
     /**
@@ -128,7 +150,7 @@ public class GS_Player : MonoBehaviour
 
         // calculate the movement direction to apply to the character controller. NOTE time is applied twice on the y axis
         // because the gravity is an acceleration, not just a velocity
-        m_MoveDirection = new Vector3(Mathf.Sin(angleRad) * axis.y, 
+        m_MoveDirection = new Vector3(Mathf.Sin(angleRad) * axis.y,
                                       m_CharacterController.isGrounded == false ? -m_Gravity * Time.deltaTime : 0.0f,
                                       Mathf.Cos(angleRad) * axis.y);
 
