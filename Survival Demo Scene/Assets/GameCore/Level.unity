@@ -17953,6 +17953,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1087378213214608812, guid: 8b6ce0a3dd06040419d0cc1a09b18087,
+        type: 3}
+      propertyPath: m_StepOffset
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 1087378213339620656, guid: 8b6ce0a3dd06040419d0cc1a09b18087,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -18064,7 +18069,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 0.5
+  m_Speed: 0.05
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 60

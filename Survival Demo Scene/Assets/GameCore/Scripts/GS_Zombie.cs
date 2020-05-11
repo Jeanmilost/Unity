@@ -215,6 +215,8 @@ public class GS_Zombie : MonoBehaviour
 
             machineState = IEMachineState.IE_MS_Attacking;
         }
+        else
+            m_AttackStarted = false;
 
         // execute the running action
         switch (machineState)
