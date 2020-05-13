@@ -24,7 +24,6 @@ public class GS_Key : MonoBehaviour
     private float       m_KeyHighlightAlpha  = 0.0f;
     private float       m_KeyHighlightOffset = 1.0f;
     private float       m_KeyHighlightSleepTimeStamp;
-    private float       m_MsgVisibleTimeStamp;
     private bool        m_DoWait;
 
     #endregion

@@ -7,6 +7,8 @@ using UnityEngine;
 */
 public class ES_SnapToGround : MonoBehaviour
 {
+    #region Public functions
+
     /**
     * Snaps all selected objects to the next hit ground
     *@note Objects will be aligned with their center point
@@ -33,4 +35,6 @@ public class ES_SnapToGround : MonoBehaviour
             }
         }
     }
+
+    #endregion
 }

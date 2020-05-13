@@ -92,9 +92,6 @@
     <Reference Include="Unity.Postprocessing.Editor">
       <HintPath>N:/Jeanmilost/Devel/Projects/Unity/Survival Demo Scene/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.XR.LegacyInputHelpers">
-      <HintPath>N:/Jeanmilost/Devel/Projects/Unity/Survival Demo Scene/Library/ScriptAssemblies/UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>N:/Jeanmilost/Devel/Projects/Unity/Survival Demo Scene/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
@@ -107,20 +104,11 @@
     <Reference Include="Unity.2D.Tilemap.Editor">
       <HintPath>N:/Jeanmilost/Devel/Projects/Unity/Survival Demo Scene/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.SpatialTracking">
-      <HintPath>N:/Jeanmilost/Devel/Projects/Unity/Survival Demo Scene/Library/ScriptAssemblies/UnityEditor.SpatialTracking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.SpatialTracking">
-      <HintPath>N:/Jeanmilost/Devel/Projects/Unity/Survival Demo Scene/Library/ScriptAssemblies/UnityEngine.SpatialTracking.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>N:/Jeanmilost/Devel/Projects/Unity/Survival Demo Scene/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.DataPrivacy">
       <HintPath>N:/Jeanmilost/Devel/Projects/Unity/Survival Demo Scene/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.XR.LegacyInputHelpers">
-      <HintPath>N:/Jeanmilost/Devel/Projects/Unity/Survival Demo Scene/Library/ScriptAssemblies/UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>N:/Jeanmilost/Devel/Projects/Unity/Survival Demo Scene/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>

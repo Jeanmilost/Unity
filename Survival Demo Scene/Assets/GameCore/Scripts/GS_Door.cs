@@ -122,6 +122,7 @@ public class GS_Door : MonoBehaviour
                 if (m_OpenDoor)
                     m_OpenDoor.Play();
 
+                // start the door opening interlude
                 m_InterludeManager.Run(tag);
             }
         }

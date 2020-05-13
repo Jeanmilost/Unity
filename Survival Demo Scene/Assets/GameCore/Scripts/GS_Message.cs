@@ -16,8 +16,7 @@ public class GS_Message : MonoBehaviour
 
     #region Private members
 
-    private string m_Message;
-    private float  m_MsgVisibleTimeStamp;
+    private float m_MsgVisibleTimeStamp;
 
     #endregion
 
@@ -27,7 +26,7 @@ public class GS_Message : MonoBehaviour
     * Gets or sets the user message
     */
     public string Message
-    { 
+    {
         get
         {
             return m_Text.text;
