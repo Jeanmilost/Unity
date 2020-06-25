@@ -1,25 +1,34 @@
 ﻿using UnityEngine;
 
+/**
+* Provides a sphere controller
+*@author Jean-Milost Reymond
+*/
+[RequireComponent(typeof(MeshCollider))]
 public class CS_SphereController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {}
+    private Vector3 m_ScreenPoint;
+    private Vector3 m_Offset;
 
-    // Update is called once per frame
-    void Update()
-    {}
-
-    void OnMouseOver()
+    /**
+    * Called when the left mouse button is clicked above the game object
+    */
+    void OnMouseDown()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector3 mousePosition = Input.mousePosition;
+        // calculate the current mouse click position on the screen and the offset to apply to the game object
+        m_ScreenPoint = Camera.main.WorldToScreenPoint(transform.position);
+        m_Offset      = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
+                                                                                        Input.mousePosition.y,
+                                                                                        m_ScreenPoint.z));
+    }
 
-            Vector3 targetPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 5.0f));
-
-            targetPosition.z = 561.0f;
-            transform.position = targetPosition;
-        }
+    /**
+    * Called when the mouse is dragged above the scene
+    */
+    void OnMouseDrag()
+    {
+        Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, m_ScreenPoint.z);
+        Vector3 curPosition    = Camera.main.ScreenToWorldPoint(curScreenPoint) + m_Offset;
+        transform.position     = curPosition;
     }
 }
