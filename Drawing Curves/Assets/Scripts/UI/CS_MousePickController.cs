@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
 /**
-* Provides a sphere controller
+* Provides a mouse pick controller
 *@author Jean-Milost Reymond
 */
 [RequireComponent(typeof(MeshCollider))]
-public class CS_SphereController : MonoBehaviour
+public class CS_MousePickController : MonoBehaviour
 {
     private Vector3 m_ScreenPoint;
     private Vector3 m_Offset;

@@ -139,7 +139,7 @@ public class CS_CurveController : MonoBehaviour
     public bool m_ReceiveShadows;
 
     // cast shadows
-    [Tooltip("If true, the curve will cast a shadow")]
+    [Tooltip("If true, the curve will cast shadows")]
     public bool m_CastShadows;
 
     // allows the hit
