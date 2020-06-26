@@ -1,8 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-using UnityEditor;
-
 /**
 * Provides a curve controller
 *@author Jean-Milost Reymond
@@ -151,7 +149,7 @@ public class CS_CurveController : MonoBehaviour
     private Mesh       m_SphereMesh;
 
     /**
-    * Called when a goal was performed
+    * Called to check if a hit between the curve and the hit object is allowed
     *@param sender - event sender
     *@param hitCollider - the curve hit collider
     *@return true if the hit should be ignored, otherwise false
@@ -310,12 +308,6 @@ public class CS_CurveController : MonoBehaviour
         // check if several scene objects should be exluded
         if (OnDoIgnoreHit != null && OnDoIgnoreHit(this, hit.collider))
             return false;
-        /*REM
-        if (excludeGameObj && (hit.collider.gameObject.name == "Ball"   ||
-                               hit.collider.gameObject.name == "Player" ||
-                               hit.collider.gameObject.name == "Goal"))
-            return false;
-        */
 
         // found hit, get its point
         hitPoint = hit.point;

@@ -65,12 +65,16 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\CS_BezierCurve.cs" />
     <Compile Include="Assets\Scripts\CS_CurveController.cs" />
+    <Compile Include="Assets\Scripts\CS_MainController.cs" />
     <Compile Include="Assets\Scripts\CS_Primitives.cs" />
     <Compile Include="Assets\Scripts\UI\CS_AllowHitToggleController.cs" />
     <Compile Include="Assets\Scripts\UI\CS_CastShadowsToggleController.cs" />
+    <Compile Include="Assets\Scripts\UI\CS_FadeExtentEditController.cs" />
     <Compile Include="Assets\Scripts\UI\CS_FadeOutToggleController.cs" />
     <Compile Include="Assets\Scripts\UI\CS_IgnoreFirstItemToggleController.cs" />
     <Compile Include="Assets\Scripts\UI\CS_MousePickController.cs" />
+    <Compile Include="Assets\Scripts\UI\CS_PointCountEditController.cs" />
+    <Compile Include="Assets\Scripts\UI\CS_ProgressPosEditController.cs" />
     <Compile Include="Assets\Scripts\UI\CS_ReceiveShadowsToggleController.cs" />
     <Compile Include="Assets\Scripts\UI\CS_ShowObstacleToggleController.cs" />
     <Reference Include="Unity.Timeline.Editor">

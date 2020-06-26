@@ -2,12 +2,12 @@
 using UnityEngine.UI;
 
 /**
-* Provides the cast shadows toggle controller
+* Provides the point count edit controller
 *@author Jean-Milost Reymond
 */
-public class CS_CastShadowsToggleController : MonoBehaviour
+public class CS_PointCountEditController : MonoBehaviour
 {
-    private Toggle             m_Toggle;
+    private InputField         m_Edit;
     private GameObject         m_Curve;
     private CS_CurveController m_CurveController;
 
@@ -17,11 +17,11 @@ public class CS_CastShadowsToggleController : MonoBehaviour
     void Start()
     {
         // get the toggle component
-        m_Toggle = GetComponent<Toggle>();
-        Debug.Assert(m_Toggle);
+        m_Edit = GetComponent<InputField>();
+        Debug.Assert(m_Edit);
 
         // add listener to know when the Toggle value changes
-        m_Toggle.onValueChanged.AddListener(delegate{OnToggleValueChanged(m_Toggle);});
+        m_Edit.onEndEdit.AddListener(delegate{OnEndEdit(m_Edit);});
 
         // get the curve object
         m_Curve = GameObject.Find("Curve");
@@ -33,11 +33,11 @@ public class CS_CastShadowsToggleController : MonoBehaviour
     }
 
     /**
-    * Called when the toggle value changed
+    * Called when the value edition ends on the edit control
     *@param sender - event sender
     */
-    void OnToggleValueChanged(Toggle sender)
+    void OnEndEdit(InputField sender)
     {
-        m_CurveController.m_CastShadows = m_Toggle.isOn;
+        m_CurveController.m_Points = int.Parse(m_Edit.text);
     }
 }

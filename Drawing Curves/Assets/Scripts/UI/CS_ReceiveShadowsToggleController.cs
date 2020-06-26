@@ -21,7 +21,7 @@ public class CS_ReceiveShadowsToggleController : MonoBehaviour
         Debug.Assert(m_Toggle);
 
         // add listener to know when the Toggle value changes
-        m_Toggle.onValueChanged.AddListener(delegate { OnFadeOutToggleValueChanged(m_Toggle); });
+        m_Toggle.onValueChanged.AddListener(delegate{OnToggleValueChanged(m_Toggle);});
 
         // get the curve object
         m_Curve = GameObject.Find("Curve");
@@ -36,7 +36,7 @@ public class CS_ReceiveShadowsToggleController : MonoBehaviour
     * Called when the toggle value changed
     *@param sender - event sender
     */
-    void OnFadeOutToggleValueChanged(Toggle sender)
+    void OnToggleValueChanged(Toggle sender)
     {
         m_CurveController.m_ReceiveShadows = m_Toggle.isOn;
     }
