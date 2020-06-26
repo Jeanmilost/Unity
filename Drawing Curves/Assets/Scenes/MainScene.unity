@@ -1624,6 +1624,7 @@ GameObject:
   - component: {fileID: 846808684}
   - component: {fileID: 846808683}
   - component: {fileID: 846808682}
+  - component: {fileID: 846808685}
   m_Layer: 5
   m_Name: FadeExtentInput
   m_TagString: Untagged
@@ -1694,13 +1695,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 846808683}
   m_TextComponent: {fileID: 1473119782}
   m_Placeholder: {fileID: 1918698154}
-  m_ContentType: 0
+  m_ContentType: 3
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 2
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -1751,6 +1752,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 846808680}
   m_CullTransparentMesh: 0
+--- !u!114 &846808685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846808680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fa27d6a805b76d40a3dc1e6f011e257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &867487817
 GameObject:
   m_ObjectHideFlags: 0
@@ -2417,6 +2430,7 @@ GameObject:
   - component: {fileID: 1169800625}
   - component: {fileID: 1169800624}
   - component: {fileID: 1169800623}
+  - component: {fileID: 1169800626}
   m_Layer: 5
   m_Name: ProgressPosInput
   m_TagString: Untagged
@@ -2544,6 +2558,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1169800621}
   m_CullTransparentMesh: 0
+--- !u!114 &1169800626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1169800621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86b8b9ae37690304f99ebe5be8f85f37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1175811969
 GameObject:
   m_ObjectHideFlags: 0
@@ -3547,6 +3573,7 @@ GameObject:
   - component: {fileID: 1869087773}
   - component: {fileID: 1869087772}
   - component: {fileID: 1869087771}
+  - component: {fileID: 1869087774}
   m_Layer: 5
   m_Name: PointCountInput
   m_TagString: Untagged
@@ -3617,13 +3644,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1869087772}
   m_TextComponent: {fileID: 955255852}
   m_Placeholder: {fileID: 56821409}
-  m_ContentType: 3
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 2
+  m_KeyboardType: 4
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 2
+  m_CharacterValidation: 1
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -3674,6 +3701,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869087769}
   m_CullTransparentMesh: 0
+--- !u!114 &1869087774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869087769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89fc21c676e58934a9f090282427bb83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1885034610
 GameObject:
   m_ObjectHideFlags: 0

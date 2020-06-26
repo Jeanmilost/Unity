@@ -298,7 +298,7 @@ public class CS_CurveController : MonoBehaviour
     bool CheckHit(Vector3 start, Vector3 end, ref Vector3 hitPoint)
     {
         // check if hit point was found
-        if (!Physics.Raycast(start, end, out RaycastHit hit))
+        if (!Physics.Raycast(start, (end - start).normalized, out RaycastHit hit, (end - start).magnitude))
             return false;
 
         // found it?
