@@ -10,57 +10,20 @@ public class CS_CurveController : MonoBehaviour
     /**
     * Point type to use to show the curve
     *@note These values means:
-    *      - IE_PT_Surface: Each point composing the line is drawn with a surface
-    *      - IE_PT_Sphere:  Each point composing the line is drawn with a sphere
-    *      - IE_PT_Line:    Each point composing the line are connected by segments, drawing thus a continuous line (WARNING may be slow)
+    *      - IE_PT_Line:   Each point composing the line are connected by segments, drawing thus a continuous line
+    *      - IE_PT_Sphere: Each point composing the line is drawn with a sphere
     */
     public enum IEPointType
     {
         IE_PT_Line,
-        IE_PT_Surface,
         IE_PT_Sphere
-    }
-
-    /**
-    * Contains the line parameters, in case line is drawn
-    */
-    [Serializable]
-    public class Line
-    {
-        // width
-        [Tooltip("Line width")]
-        public float m_Width = 0.2f;
-    }
-
-    /**
-    * Contains the surface parameters, in case surfaces are drawn
-    */
-    [Serializable]
-    public class Surface
-    {
-        // width
-        [Tooltip("Surface width")]
-        public float m_Width = 0.02f;
-
-        // height
-        [Tooltip("Surface height")]
-        public float m_Height = 0.02f;
-
-        /**
-        * Create the surface  mesh
-        *@return mesh containing the surface
-        */
-        public Mesh CreateMesh()
-        {
-            return CS_Primitives.CreateSurface(m_Width, m_Height, true, true);
-        }
     }
 
     /**
     * Contains the sphere parameters, in case spheres are drawn
     */
     [Serializable]
-    public class Sphere
+    public class ISphere
     {
         // radius
         [Tooltip("Sphere radius")]
@@ -80,13 +43,11 @@ public class CS_CurveController : MonoBehaviour
         */
         public Mesh CreateMesh()
         {
-            return CS_Primitives.CreateSphere(m_Radius, m_LongitudeDivCount, m_LatitudeDivCount, true, true);
+            return CS_Primitives.CreateSphere(m_Radius, m_LongitudeDivCount, m_LatitudeDivCount, true, false);
         }
     }
 
-    public Line    m_Line    = new Line();
-    public Surface m_Surface = new Surface();
-    public Sphere  m_Sphere  = new Sphere();
+    public ISphere m_Sphere = new ISphere();
 
     // start from object
     [Tooltip("The object from which the curve should start")]
@@ -129,8 +90,8 @@ public class CS_CurveController : MonoBehaviour
     public bool m_IgnoreFirstOnFade = true;
 
     // fade extent factor
-    [Tooltip("The fade extent factor")]
-    public float m_FadeExtentFactor = 1.5f;
+    [Tooltip("The fade extent factor, between 0.0f and 1.0f")]
+    public float m_FadeExtentFactor = 0.02f;
 
     // receive shadows
     [Tooltip("If true, the curve may receive a shadow from the other objects")]
@@ -144,9 +105,10 @@ public class CS_CurveController : MonoBehaviour
     [Tooltip("If true, the curve will stop when it hits an object in the scene")]
     public bool m_AllowHit;
 
-    private GameObject m_Curve;
-    private Mesh       m_SurfaceMesh;
-    private Mesh       m_SphereMesh;
+    private GameObject   m_Curve;
+    private GameObject   m_Line;
+    private Mesh         m_SphereMesh;
+    private LineRenderer m_LineRenderer;
 
     /**
     * Called to check if a hit between the curve and the hit object is allowed
@@ -181,12 +143,19 @@ public class CS_CurveController : MonoBehaviour
     */
     void Start()
     {
-        m_SurfaceMesh = m_Surface.CreateMesh();
-        m_SphereMesh  = m_Sphere.CreateMesh();
+        m_SphereMesh = m_Sphere.CreateMesh();
 
         // get the main curve object
         m_Curve = GameObject.Find("Curve");
         Debug.Assert(m_Curve);
+
+        // get the line object
+        m_Line = GameObject.Find("Line");
+        Debug.Assert(m_Line);
+
+        // get the line renderer
+        m_LineRenderer = m_Line.GetComponent<LineRenderer>();
+        Debug.Assert(m_LineRenderer);
     }
 
     /**
@@ -206,8 +175,10 @@ public class CS_CurveController : MonoBehaviour
         if (m_EndObject)
             EndPoint = m_EndObject.transform.position;
 
-        Vector3 hitPoint       = Vector3.zero;
-        int     powerThreshold = (int)((float)m_Points * m_ProgressBarPos);
+        Vector3[] positions      = new Vector3[m_Points];
+        Vector3   hitPoint       = Vector3.zero;
+        int       powerThreshold = (int)(m_Points * m_ProgressBarPos);
+        int       posCount       = 0;
 
         // iterate through points
         for (int i = 0; i < m_Points; ++i)
@@ -220,72 +191,127 @@ public class CS_CurveController : MonoBehaviour
             Vector3 startPoint = CS_BezierCurve.GetQuadraticBezierPoint(StartPoint, EndPoint, ControlPoint, startPos);
             Vector3 endPoint   = CS_BezierCurve.GetQuadraticBezierPoint(StartPoint, EndPoint, ControlPoint, endPos);
 
-            Material mat;
+            // ignore the first item if needed
+            if (m_FadeOut && m_IgnoreFirstOnFade && i == 0)
+                continue;
 
-            // do apply a fade out on the line?
-            if (m_FadeOut)
-            {
-                // ignore the first item if needed
-                if (m_IgnoreFirstOnFade && i == 0)
-                    continue;
-
-                // calculate next alpha value to apply
-                float alpha = ((m_Points - (i * m_FadeExtentFactor)) * m_Material.color.a) / m_Points;
-
-                // is alpha value out of bounds?
-                if (alpha <= 0)
-                    break;
-                else
-                if (alpha > 1.0f)
-                    alpha = 1.0f;
-
-                Color itemColor = (i >= powerThreshold ? new Color(m_Material.color.r, m_Material.color.g, m_Material.color.b, alpha)
-                                                       : new Color(m_PowerColor.r,     m_PowerColor.g,     m_PowerColor.b,     alpha));
-
-                // create a new material to draw the next line segment
-                mat = new Material(m_Material)
-                {
-                    color = itemColor
-                };
-
-                // change the emission color
-                mat.SetColor("_EmissionColor", itemColor);
-            }
-            else
-            {
-                Color itemColor = (i >= powerThreshold ? new Color(m_Material.color.r, m_Material.color.g, m_Material.color.b, m_Material.color.a)
-                                                       : new Color(m_PowerColor.r,     m_PowerColor.g,     m_PowerColor.b,     m_PowerColor.a));
-
-                mat = new Material(m_Material)
-                {
-                    color = itemColor
-                };
-
-                // change the emission color
-                mat.SetColor("_EmissionColor", itemColor);
-            }
-
-            // draw sight line point
+            // process the next line position
             switch (m_PointType)
             {
-                case IEPointType.IE_PT_Surface: Graphics.DrawMesh(m_SurfaceMesh, startPoint, Quaternion.identity, mat, m_Curve.layer, null, 0, null, m_CastShadows, m_ReceiveShadows); break;
-                case IEPointType.IE_PT_Sphere:  Graphics.DrawMesh(m_SphereMesh,  startPoint, Quaternion.identity, mat, m_Curve.layer, null, 0, null, m_CastShadows, m_ReceiveShadows); break;
+                case IEPointType.IE_PT_Sphere:
+                {
+                    Material mat;
+
+                    // do apply a fade out on the line?
+                    if (m_FadeOut)
+                    {
+                        // calculate next alpha value to apply. NOTE multiply by 50 because this was the value where
+                        // the extent roughly filled the entire curve
+                        float alpha = ((m_Points - (i * (m_FadeExtentFactor * 50))) * m_Material.color.a) / m_Points;
+
+                        // is alpha value out of bounds?
+                        if (alpha <= 0)
+                            break;
+                        else
+                        if (alpha > 1.0f)
+                            alpha = 1.0f;
+
+                        Color itemColor =
+                                (i >= powerThreshold ? new Color(m_Material.color.r, m_Material.color.g, m_Material.color.b, alpha)
+                                                     : new Color(m_PowerColor.r,     m_PowerColor.g,     m_PowerColor.b,     alpha));
+
+                        // create a new material to draw the next sphere
+                        mat = new Material(m_Material)
+                        {
+                            color = itemColor
+                        };
+
+                        // change the emission color
+                        mat.SetColor("_EmissionColor", itemColor);
+                    }
+                    else
+                    {
+                        Color itemColor =
+                                (i >= powerThreshold ? new Color(m_Material.color.r, m_Material.color.g, m_Material.color.b, m_Material.color.a)
+                                                     : new Color(m_PowerColor.r,     m_PowerColor.g,     m_PowerColor.b,     m_PowerColor.a));
+
+                        mat = new Material(m_Material)
+                        {
+                            color = itemColor
+                        };
+
+                        // change the emission color
+                        mat.SetColor("_EmissionColor", itemColor);
+                    }
+
+                    // draw the next sphere
+                    Graphics.DrawMesh(m_SphereMesh,
+                                      startPoint,
+                                      Quaternion.identity,
+                                      mat,
+                                      m_Curve.layer,
+                                      null,
+                                      0,
+                                      null,
+                                      m_CastShadows,
+                                      m_ReceiveShadows);
+
+                    break;
+                }
+
                 case IEPointType.IE_PT_Line:
                 {
-                    // calculate and get the line segment (NOTE this way it's not optimized. Matrix should be used instead)
-                    Mesh lineSegmentMesh = CreateLineSegment(startPoint, endPoint, m_Line.m_Width);
+                    // calculate the index to use in the destination array
+                    int index = (m_FadeOut && m_IgnoreFirstOnFade) ? i - 1 : i;
 
-                    // draw the line segment
-                    Graphics.DrawMesh(lineSegmentMesh, Matrix4x4.identity, mat, m_Curve.layer, null, 0, null, m_CastShadows, m_ReceiveShadows);
+                    // update the array position count and set the next line point
+                    posCount  = index;
+                    positions.SetValue(transform.InverseTransformPoint(startPoint), index);
                     break;
                 }
             }
 
-            // do detect if line hit with something?
+            // detect if line hit with something in the scene
             if (m_AllowHit && i < m_Points - 1)
                 if (CheckHit(startPoint, endPoint, ref hitPoint))
                     break;
         }
+
+        // render the line, otherwise disable it
+        if (m_PointType == IEPointType.IE_PT_Line)
+        {
+            // copy the positions and resize the array in case it was truncated
+            Vector3[] pos = new Vector3[posCount];
+            Array.Copy(positions, pos, posCount);
+
+            // set the start and end colors
+            m_LineRenderer.startColor = m_Material.color;
+            m_LineRenderer.endColor   = m_PowerColor;
+
+            Gradient gradient = new Gradient();
+
+            // configure the line color
+            if (m_FadeOut)
+                gradient.SetKeys(new GradientColorKey[]{new GradientColorKey(m_PowerColor, m_ProgressBarPos), new GradientColorKey(m_Material.color, m_ProgressBarPos + 0.001f)},
+                                 new GradientAlphaKey[]{new GradientAlphaKey(1.0f,         0.0f),             new GradientAlphaKey(0.0f,             Mathf.Max(1.0f - m_FadeExtentFactor, 0.001f))});
+            else
+                gradient.SetKeys(new GradientColorKey[]{new GradientColorKey(m_PowerColor, m_ProgressBarPos), new GradientColorKey(m_Material.color, m_ProgressBarPos + 0.01f)},
+                                 new GradientAlphaKey[]{new GradientAlphaKey(1.0f,         0.0f),             new GradientAlphaKey(1.0f,             1.0f)});
+
+            m_LineRenderer.colorGradient = gradient;
+
+            // configure the shadow
+            m_LineRenderer.shadowCastingMode = m_CastShadows ? UnityEngine.Rendering.ShadowCastingMode.TwoSided : UnityEngine.Rendering.ShadowCastingMode.Off;
+            m_LineRenderer.receiveShadows    = m_ReceiveShadows;
+
+            // draw the line
+            m_LineRenderer.positionCount = posCount;
+            m_LineRenderer.SetPositions(pos);
+            m_LineRenderer.gameObject.SetActive(true);
+        }
+        else
+            // line isn't used, disable the renderer
+            m_LineRenderer.gameObject.SetActive(false);
     }
 
     /**
@@ -312,63 +338,5 @@ public class CS_CurveController : MonoBehaviour
         // found hit, get its point
         hitPoint = hit.point;
         return true;
-    }
-
-    /**
-    * Create a mesh containing a line segment between 2 points
-    *@param start - start point
-    *@param end - end point
-    *@param lineWidth - line width
-    *@return mesh containing line segment
-    */
-    Mesh CreateLineSegment(Vector3 start, Vector3 end, float lineWidth)
-    {
-        Vector3[] vertices  = new Vector3[4];
-        Vector3[] normals   = new Vector3[4];
-        Vector2[] texCoords = new Vector2[4];
-        int[]     indices   = new int[6];
-
-        // calculate surface normal and side
-        Vector3 normal = Vector3.Cross(start,  end);
-        Vector3 side   = Vector3.Cross(normal, end - start);
-
-        side.Normalize();
-
-        // create vertices
-        vertices[0] = start + side * (lineWidth /  2.0f);
-        vertices[1] = start + side * (lineWidth / -2.0f);
-        vertices[2] = end   + side * (lineWidth /  2.0f);
-        vertices[3] = end   + side * (lineWidth / -2.0f);
-
-        // populate texture coordinates
-        texCoords[0] = new Vector2(0.0f, 0.0f);
-        texCoords[1] = new Vector2(0.0f, 1.0f);
-        texCoords[2] = new Vector2(1.0f, 0.0f);
-        texCoords[3] = new Vector2(1.0f, 1.0f);
-
-        // populate normals
-        for (int i = 0; i < 4; ++i)
-            normals[i] = normal;
-
-        // populate indices
-        indices[0] = 0;
-        indices[1] = 1;
-        indices[2] = 2;
-        indices[3] = 3;
-        indices[4] = 2;
-        indices[5] = 1;
-
-        // create the mesh
-        Mesh mesh = new Mesh
-        {
-            vertices  = vertices,
-            normals   = normals,
-            uv        = texCoords,
-            triangles = indices
-        };
-
-        mesh.RecalculateBounds();
-
-        return mesh;
     }
 }
