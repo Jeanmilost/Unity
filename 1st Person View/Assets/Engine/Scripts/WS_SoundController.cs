@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 /**
-* Sound controller, contains the sounds the player may emit while he's moving
+* Sound controller, contains the sounds an object may emit depending on its actions
 */
 public class WS_SoundController
 {
