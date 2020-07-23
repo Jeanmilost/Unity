@@ -932,7 +932,7 @@ public class WS_PlayerController : MonoBehaviour
             Jumping = false;
 
         // reset the jump animation to idle or to the appropriate running animation if the jump ends
-        if (!Jumping && m_AnimationController.AnimState == IAnimationController.IEAnimState.IE_AS_Jumping)
+        if (!Jumping && IsGrounded  && m_AnimationController.AnimState == IAnimationController.IEAnimState.IE_AS_Jumping)
             if (m_Running)
                 m_AnimationController.AnimState = IAnimationController.IEAnimState.IE_AS_Running;
             else
