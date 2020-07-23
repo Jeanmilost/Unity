@@ -1,0 +1,33 @@
+# Written by MakeHuman 1.2.0 Alpha3
+version v1.2.0
+name Yuna
+camera 3.5 350.5 0.0 0.0 0.0 1.0
+modifier head/head-fat-decr|incr -0.592000
+modifier head/head-triangular 0.259000
+modifier head/head-invertedtriangular 0.020000
+modifier head/head-diamond 0.088000
+modifier breast/BreastSize 0.653000
+modifier breast/BreastFirmness 0.500000
+modifier breast/breast-point-decr|incr -0.892000
+modifier breast/breast-volume-vert-down|up -0.414000
+modifier macrodetails/Gender 0.000000
+modifier macrodetails/Age 0.500000
+modifier macrodetails/African 0.000000
+modifier macrodetails/Asian 1.000000
+modifier macrodetails/Caucasian 0.000000
+modifier macrodetails-universal/Muscle 0.884000
+modifier macrodetails-universal/Weight 0.497000
+modifier macrodetails-height/Height 0.500000
+modifier macrodetails-proportions/BodyProportions 0.565000
+proxy female_generic 84b1a384-1af0-4126-9030-222edb78b318
+hair rev_fr_braidbun1 c3918839-443d-4674-b508-cb6b2f1dd2fa
+skeleton game_engine.mhskel
+eyes HighPolyEyes 2c12f43b-1303-432c-b7ce-d78346baf2e6
+clothes RunningShoes e57655db-9408-43ed-a795-971c115219fe
+clothes ShortJeans 3c7e06c8-2acc-4b39-ae68-12de6007e5c5
+clothes Deathnote 7616a671-46be-482d-a331-06b5c07590a3
+clothesHideFaces True
+skinMaterial skins/young_asian_female/young_asian_female.mhmat
+material rev_fr_braidbun1 c3918839-443d-4674-b508-cb6b2f1dd2fa rev_fr_braidbun1.mhmat
+material HighPolyEyes 2c12f43b-1303-432c-b7ce-d78346baf2e6 eyes/materials/brown.mhmat
+subdivide False
