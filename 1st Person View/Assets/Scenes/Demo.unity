@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 191253536}
   - component: {fileID: 191253535}
   - component: {fileID: 191253534}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mirror
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,7 +228,7 @@ MeshRenderer:
   m_GameObject: {fileID: 191253533}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 343593820}
   - component: {fileID: 343593819}
   - component: {fileID: 343593818}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Backface
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -480,7 +480,7 @@ GameObject:
   - component: {fileID: 639327618}
   - component: {fileID: 639327617}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Jump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1147,7 +1147,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2001055841}
   - component: {fileID: 2001055840}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1185,7 +1185,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8600000, guid: 90c90b95bcedd784e9a7ce09e64e8450, type: 2}
   m_TargetDisplay: 0
@@ -1205,7 +1205,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2001055838}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 191253537}
