@@ -19,7 +19,7 @@ This project contains a small 3D Bezier curve component, which may be added into
 ## Shader tests
 These projects are just small laboratories where I test some techniques relatives to shaders and post-processing.
 
-### Bump and parralax mapping
+### Bump and parallax mapping
 This repository contains a small test about how to create bump mapped and parallax mapped objects.
 
 <img src="Shader%20Tests/BumpAndParallaxMapping/Screenshots/BumpAndParallaxMapping.png" width="500" />
