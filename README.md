@@ -24,6 +24,11 @@ This repository contains a small test about how to create bump mapped and parall
 
 <img src="Shader%20Tests/BumpAndParallaxMapping/Screenshots/BumpAndParallaxMapping.png" width="500" />
 
+## SQLite Demo
+This project demonstrates how Unity may interact with a SQLite database. First a SQLite database may be opened, or created if still not exists, then queries may be processed on the database.
+
+<img src="SQLite%20Demo/Screenshots/SQLiteDemo.png" width="500" />
+
 ## Survival Demo Scene
 This is a small survival horror demo scene, showing how a Resident Evil like may be created with Unity. The demo contains 2 rooms and a door opening interlude. A zombie is also present in a room, with a part of its AI implemented. He can walk to and attack the player.
 
