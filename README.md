@@ -16,6 +16,11 @@ This project contains a small 3D Bezier curve component, which may be added into
 
 <img src="Drawing%20Curves/Screenshots/Curve_Screenshot.png" width="500" />
 
+## Forest
+This project is just an attempt about volumetric fog in a natural ambient.
+
+<img src="Forest/Screenshots/Forest.png" width="500" />
+
 ## Shader tests
 These projects are just small laboratories where I test some techniques relatives to shaders and post-processing.
 
