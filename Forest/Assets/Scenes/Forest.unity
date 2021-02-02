@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 0.64705884, g: 0.63529414, b: 0.62352943, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.0075
+  m_FogDensity: 0.025
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -121,24 +121,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &124956287 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1929893896, guid: 284c98cb5f804bd49a8c9376a2a79278,
-    type: 3}
-  m_PrefabInstance: {fileID: 1491305805}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &124956291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 124956287}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bce179cdee1804549ada53a919965acb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &245416552
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -485,78 +467,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1929893898, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: m_MinParticleSize
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893898, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: m_MaxParticleSize
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.r
-      value: 0.59607846
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.5882353
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.b
-      value: 0.5764706
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key0.r
-      value: 0.59607846
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key0.g
-      value: 0.5882353
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key0.b
-      value: 0.5764706
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key1.r
-      value: 0.59607846
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key1.g
-      value: 0.5882353
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key1.b
-      value: 0.5764706
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key2.r
-      value: 0.59607846
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key2.g
-      value: 0.5882353
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key2.b
-      value: 0.5764706
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key3.r
-      value: 0.59607846
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key3.g
-      value: 0.5882353
-      objectReference: {fileID: 0}
-    - target: {fileID: 1929893899, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key3.b
-      value: 0.5764706
-      objectReference: {fileID: 0}
     - target: {fileID: 1264418886333218, guid: 284c98cb5f804bd49a8c9376a2a79278, type: 3}
       propertyPath: m_Name
       value: Player
