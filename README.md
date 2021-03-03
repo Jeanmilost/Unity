@@ -38,3 +38,8 @@ This project demonstrates how Unity may interact with a SQLite database. First a
 This is a small survival horror demo scene, showing how a Resident Evil like may be created with Unity. The demo contains 2 rooms and a door opening interlude. A zombie is also present in a room, with a part of its AI implemented. He can walk to and attack the player.
 
 <img src="Survival%20Demo%20Scene/Screenshots/Survival_Screenshot.png" width="500" />
+
+## License
+All the <b>demos</b> and the <b>source code</b> they contain are licensed under the permissive MIT license, unless marked differently in a particular folder/file.
+
+The <b>assets</b> used in the demos are often free assets downloaded from popular stores, <b>please respect and refer to their original license if you download the demo</b>. The download link where you can get them is generally provided in the description of the demo. <b>If you want to use a particular asset for your own projects, please download it from the original store, and use your own copy but never use the asset provided in the demo</b>.
