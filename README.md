@@ -34,6 +34,11 @@ This repository contains a small test about how to create bump mapped and parall
 
 <img src="Shader%20Tests/BumpAndParallaxMapping/Screenshots/BumpAndParallaxMapping.png" width="500" />
 
+### Dithering
+This repository contains a test around a transparent dither effect I found on the web.
+
+<img src="Shader%20Tests/Dithering/Screenshots/Dithering.png" width="500" />
+
 ## SQLite Demo
 This project demonstrates how Unity may interact with a SQLite database. First a SQLite database may be opened, or created if still not exists, then queries may be processed on the database.
 
