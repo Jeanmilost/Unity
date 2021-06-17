@@ -11,6 +11,11 @@ This project demonstrates a possible solution for a third person view.
 
 <img src="3rd%20Person%20View/Screenshots/3rdPersonView.png" width="500" />
 
+## Camera behavior
+This project is a study about how a 3rd person camera may interact with its environment. There are several options to change the camera position by following a target or the default character body, to apply a dithering on the character when the camera is close to it, and/or to occlude the objects located between the camera and its target. The purpose of this project is to find the best possible balance to allow the camera to follow the player without be hidden by another object.
+
+<img src="Camera%20Behavior/Screenshots/CameraBehavior.png" width="500" />
+
 ## Drawing curves
 This project contains a small 3D Bezier curve component, which may be added into a scene. I use a such component in several game projects, e.g to show a line of sight towards a target.
 

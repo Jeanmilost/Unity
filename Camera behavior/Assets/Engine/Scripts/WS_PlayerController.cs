@@ -579,6 +579,18 @@ public class WS_PlayerController : MonoBehaviour
     [Tooltip("Stick to ground helper distance, used to guarantee a minimum distance when the ground test is performed")]
     public float m_StickToGroundHelperDistance = 0.6f;
 
+    // minimum camera distance in percents where the dither will be applied to the played
+    [Tooltip("Minimum camera distance in percents where the dither will be applied to the played")]
+    public float m_CameraDitherMinDist  = 0.2f;
+
+    // dither minimum level to apply to the player when dither should be applied
+    [Tooltip("Dither minimum level to apply to the player when dither should be applied")]
+    public float m_DitherMinLevel = 0.2f;
+
+    // dither velocity
+    [Tooltip("Dither velocity")]
+    public float m_DitherVelocity = 5.0f;
+
     // air control
     [Tooltip("If true, the player may continue to move even while he's jumping")]
     public bool m_AirControl;
@@ -587,12 +599,16 @@ public class WS_PlayerController : MonoBehaviour
     [Tooltip("If true, the player will be shown on the first person, otherwise third person")]
     public bool m_FirstPerson = false;
 
-    // enable the dynamic camera
-    [Tooltip("If true, enable the dynamic camera, i.e the camera will reacts on wall collisions")]
-    public bool m_DynamicCamera = true;
+    // enable camera collision
+    [Tooltip("If true, the camera will reacts when it will collides to its environment")]
+    public bool m_CameraCollision = true;
+
+    // enable the dithering on the player while camera is close to the player
+    [Tooltip("If true, the dithering will be enabled on the player while camera is close to the player")]
+    public bool m_CameraDither = true;
 
     // enable the camera occlusion
-    [Tooltip("If true, enable the camera occlusion")]
+    [Tooltip("If true, the camera occlusion will be enabled")]
     public bool m_CameraOcclusion = true;
 
     private readonly IModelController  m_ModelController     = new IModelController();
@@ -1255,11 +1271,7 @@ public class WS_PlayerController : MonoBehaviour
                                 GameObject            target,
                                 SortedSet<GameObject> prevDetectedObjects)
     {
-        /*
-        if (m_DynamicCamera)
-            m_ModelController.Model.SetActive(true);
-        */
-
+        // do apply a camera occlusion?
         if (m_CameraOcclusion)
             // iterate through detected objects to occlude
             foreach (GameObject detectedObject in prevDetectedObjects)
@@ -1291,28 +1303,32 @@ public class WS_PlayerController : MonoBehaviour
                             GameObject            target,
                             SortedSet<GameObject> detectedObjects)
     {
-        if (m_DynamicCamera)
-        {
+        // if camera collision is enabled, translate the camera to the proposed position
+        if (m_CameraCollision)
             camera.transform.position = proposedPos;
 
-            if (distance < (minDistance + ((maxDistance - minDistance) * 0.2f)))
+        // do apply dither on player if camera comes close?
+        if (m_CameraDither)
+        {
+            // calculate next dither value on fade in or fade out
+            if (distance < (minDistance + ((maxDistance - minDistance) * m_CameraDitherMinDist)))
             {
-                if (m_DitherLevel > 0.2f)
-                    m_DitherLevel -= 0.05f;
+                if (m_DitherLevel > m_DitherMinLevel)
+                    m_DitherLevel -= m_DitherVelocity * Time.deltaTime;
                 else
-                    m_DitherLevel = 0.2f;
-
-                //m_ModelController.Model.SetActive(false);
+                    m_DitherLevel = m_DitherMinLevel;
             }
             else
             if (m_DitherLevel < 1.0f)
-                m_DitherLevel += 0.05f;
+                m_DitherLevel += m_DitherVelocity * Time.deltaTime;
             else
                 m_DitherLevel = 1.0f;
 
+            // apply the new dither transparency to player
             m_ModelController.ChangeDitherTransparency(m_DitherLevel);
         }
 
+        // do apply a camera occlusion?
         if (m_CameraOcclusion)
             // iterate through detected objects to occlude
             foreach (GameObject detectedObject in detectedObjects)
@@ -1323,18 +1339,7 @@ public class WS_PlayerController : MonoBehaviour
                 // iterate through object renderers
                 foreach (MeshRenderer renderer in renderers)
                     // if dither shader, change its transparency
-                    renderer.material.SetFloat("_Transparency", 0.2f);
+                    renderer.material.SetFloat("_Transparency", m_DitherMinLevel);
             }
-
-        /*REM
-        if (GetComponent<Renderer>().isVisible)
-        {
-            //Visible code here
-        }
-        else
-        {
-            //Not visible code here
-        }
-        */
     }
 }

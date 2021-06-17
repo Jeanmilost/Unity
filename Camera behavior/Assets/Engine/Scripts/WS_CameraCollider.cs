@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+/**
+* Camera collider
+*@author Jean-Milost Reymond
+*/
 public class WS_CameraCollider : MonoBehaviour
 {
     /**
@@ -80,20 +84,28 @@ public class WS_CameraCollider : MonoBehaviour
     [Tooltip("The maximum distance the camera may reach, if Auto Max Dir option is deactivated")]
     public float m_MaxDistance = 4.0f;
 
-    // if true, the detection will happens from the player position to the camera position
-    [Tooltip("If true, the detection will happens from the player position to the camera position")]
+    // determine if the detection will happens from the player position to the camera position, or from camera to player, or both
+    [Tooltip("determine if the detection will happens from the player position to the camera position, or from camera to player, or both")]
     public IEDetectionType m_DetectionType = IEDetectionType.IE_DT_PlayerToCamera;
+
+    // whether the camera should follow the target or the player collider
+    [Tooltip("If true, the camera will follow the camera target instead of the player collider")]
+    public bool m_FollowTarget = false;
 
     // auto max distance
     [Tooltip("If true, the camera maximum distance will be calculated automatically from the current camera position")]
     public bool m_AutoMax = true;
 
     private          GameObject            m_Player;
+    private          GameObject            m_CameraTarget;
     private          CapsuleCollider       m_PlayerCollider;
     private          SphereCollider        m_CameraCollider;
     private readonly SortedSet<GameObject> m_DetectedObjects = new SortedSet<GameObject>(new IGameObjectComparer());
     private          Vector3               m_Dir;
+    private          Vector3               m_CamTargetDir;
     private          float                 m_Distance;
+    private          float                 m_CamTargetDistance;
+    private          float                 m_CamTargetMaxDistance;
 
     /**
     * Gets or sets the OnBeforeCheckCollision event
@@ -116,7 +128,7 @@ public class WS_CameraCollider : MonoBehaviour
 
         // if auto max is enabled, the max distance will be deduced from the current camera position
         if (m_AutoMax)
-            m_MaxDistance = transform.localPosition.magnitude;
+            m_MaxDistance = m_Distance;
     }
 
     /**
@@ -131,8 +143,26 @@ public class WS_CameraCollider : MonoBehaviour
         m_Player = GameObject.Find("Player");
         Debug.Assert(m_Player);
 
+        // get the camera target
+        m_CameraTarget = GameObject.Find("CameraTarget");
+        Debug.Assert(m_CameraTarget);
+
+        // get the player collider
         m_PlayerCollider = m_Player.GetComponent<CapsuleCollider>();
         Debug.Assert(m_PlayerCollider);
+
+        // get the camera direction and starting distance
+        if (m_FollowTarget)
+        {
+            m_CamTargetDir      = (m_CameraTarget.transform.localPosition - transform.localPosition).normalized;
+            m_CamTargetDistance = (m_CameraTarget.transform.localPosition - transform.localPosition).magnitude;
+
+            // if auto max is enabled, the max distance will be deduced from the current camera position
+            if (m_AutoMax)
+                m_CamTargetMaxDistance = m_CamTargetDistance;
+            else
+                m_CamTargetMaxDistance = m_MaxDistance;
+        }
     }
 
     /**
@@ -140,28 +170,75 @@ public class WS_CameraCollider : MonoBehaviour
     */
     void LateUpdate()
     {
+        float   maxDistance = m_FollowTarget ? m_CamTargetMaxDistance : m_MaxDistance;
+        Vector3 dir         = m_FollowTarget ? m_CamTargetDir         : m_Dir;
+
         // notify that a new collision detection begins
-        OnBeforeCheckCollision?.Invoke(this, m_MinDistance, m_MaxDistance, transform.gameObject, m_Player, m_DetectedObjects);
+        OnBeforeCheckCollision?.Invoke(this, m_MinDistance, maxDistance, transform.gameObject, m_Player, m_DetectedObjects);
 
         // clear the previous detection
         m_DetectedObjects.Clear();
 
+        // get the target position the camera should reach
+        Vector3 targetPosition = m_FollowTarget ? m_CameraTarget.transform.position : m_PlayerCollider.transform.position;
+
         // calculate the default camera position
-        transform.position = transform.parent.TransformPoint(m_Dir * m_MaxDistance);
-        m_Distance         = m_MaxDistance;
+        if (m_FollowTarget)
+            transform.position =
+                    transform.parent.TransformPoint
+                            (new Vector3(m_CameraTarget.transform.localPosition.x - (m_CamTargetMaxDistance * m_CamTargetDir.x),
+                                         m_CameraTarget.transform.localPosition.y - (m_CamTargetMaxDistance * m_CamTargetDir.y),
+                                         m_CameraTarget.transform.localPosition.z - (m_CamTargetMaxDistance * m_CamTargetDir.z)));
+        else
+            transform.position = transform.parent.TransformPoint(m_Dir * m_MaxDistance);
+
+        // calculate the distance between the camera and its target
+        CalculateDistance(transform.position, targetPosition, maxDistance);
+
+        Vector3 proposedPos;
+
+        // recalculate the new camera position, if needed
+        if (m_Distance != maxDistance)
+        {
+            // calculate the proposed position
+            if (m_FollowTarget)
+                proposedPos =
+                        transform.parent.TransformPoint
+                                (new Vector3(m_CameraTarget.transform.localPosition.x - (m_Distance * m_CamTargetDir.x),
+                                             m_CameraTarget.transform.localPosition.y - (m_Distance * m_CamTargetDir.y),
+                                             m_CameraTarget.transform.localPosition.z - (m_Distance * m_CamTargetDir.z)));
+            else
+                proposedPos = transform.parent.TransformPoint(dir * m_Distance);
+        }
+        else
+            proposedPos = transform.position;
+
+        // resolve the collision
+        OnResolveCollision?.Invoke(this, m_Distance, m_MinDistance, m_MaxDistance, proposedPos, transform.gameObject, m_Player, m_DetectedObjects);
+    }
+
+    /**
+    * Calculates the distance where the camera should be set from target position
+    *@param source - camera source position
+    *@param destination - target destination to reach
+    *@param maxDistance - maximum distance the camera may reach from the target position
+    */
+    void CalculateDistance(Vector3 source, Vector3 destination, float maxDistance)
+    {
+        m_Distance = maxDistance;
 
         // detect from camera to player
         if (m_DetectionType == IEDetectionType.IE_DT_CameraToPlayer || m_DetectionType == IEDetectionType.IE_DT_Both)
         {
             // detect objects hit by the camera to player ray
-            Vector3      delta = (m_PlayerCollider.transform.position - transform.position);
-            RaycastHit[] hits  = Physics.RaycastAll(transform.position, delta.normalized, delta.magnitude, m_CameraOcclusion);
+            Vector3      delta = (destination - source);
+            RaycastHit[] hits  = Physics.RaycastAll(source, delta.normalized, delta.magnitude, m_CameraOcclusion);
 
             // iterate through hit objects
             for (int i = 0; i < hits.Length; ++i)
             {
                 // calculate a position closer to the target
-                m_Distance = Mathf.Min(m_Distance, Mathf.Clamp(hits[i].distance * 0.9f, m_MinDistance, m_MaxDistance));
+                m_Distance = Mathf.Min(m_Distance, Mathf.Clamp(hits[i].distance * 0.9f, m_MinDistance, maxDistance));
 
                 // add the detected object to list, if still not exists
                 m_DetectedObjects.Add(hits[i].transform.gameObject);
@@ -172,29 +249,18 @@ public class WS_CameraCollider : MonoBehaviour
         if (m_DetectionType == IEDetectionType.IE_DT_PlayerToCamera || m_DetectionType == IEDetectionType.IE_DT_Both)
         {
             // detect objects hit by the player to camera ray
-            Vector3      delta = (transform.position - m_PlayerCollider.transform.position);
-            RaycastHit[] hits  = Physics.RaycastAll(m_PlayerCollider.transform.position, delta.normalized, delta.magnitude, m_CameraOcclusion);
+            Vector3      delta = (source - destination);
+            RaycastHit[] hits  = Physics.RaycastAll(destination, delta.normalized, delta.magnitude, m_CameraOcclusion);
 
             // iterate through hit objects
             for (int i = 0; i < hits.Length; ++i)
             {
                 // calculate a position closer to the target
-                m_Distance = Mathf.Min(m_Distance, Mathf.Clamp(hits[i].distance * 0.9f, m_MinDistance, m_MaxDistance));
+                m_Distance = Mathf.Min(m_Distance, Mathf.Clamp(hits[i].distance * 0.9f, m_MinDistance, maxDistance));
 
                 // add the detected object to list, if still not exists
                 m_DetectedObjects.Add(hits[i].transform.gameObject);
             }
         }
-
-        Vector3 proposedPos;
-
-        // recalculate the new camera position, if needed
-        if (m_Distance != m_MaxDistance)
-            proposedPos = transform.parent.TransformPoint(m_Dir * m_Distance);
-        else
-            proposedPos = transform.position;
-
-        // resolve the collision
-        OnResolveCollision?.Invoke(this, m_Distance, m_MinDistance, m_MaxDistance, proposedPos, transform.gameObject, m_Player, m_DetectedObjects);
     }
 }
