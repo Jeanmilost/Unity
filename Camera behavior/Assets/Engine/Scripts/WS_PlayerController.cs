@@ -282,7 +282,7 @@ public class WS_PlayerController : MonoBehaviour
 
         private IEAnimState           m_AnimState = IEAnimState.IE_AS_Idle;
         private SkinnedMeshRenderer[] m_Renderers;
-
+        private int[]                 m_RenderQueues;
 
         /**
         * Gets the model
@@ -412,6 +412,20 @@ public class WS_PlayerController : MonoBehaviour
             // get the model renderers
             m_Renderers = Model.GetComponentsInChildren<SkinnedMeshRenderer>();
 
+            int index          = 0;
+                m_RenderQueues = new int[m_Renderers.Length];
+
+            // save the current model render queue values
+            foreach (SkinnedMeshRenderer renderer in m_Renderers)
+            {
+                if (renderer.material.shader.name == "Standard")
+                    m_RenderQueues[index] = -1;
+                else
+                    m_RenderQueues[index] = renderer.material.renderQueue;
+
+                ++index;
+            }
+
             // get the kick animation controller
             KickAnimController = Model.GetComponent<WS_KickAnimController>();
 
@@ -437,10 +451,29 @@ public class WS_PlayerController : MonoBehaviour
             // limit the value between 0.0f and 1.0f
             value = Mathf.Clamp(value, 0.0f, 1.0f);
 
+            int index = 0;
+
             // iterate through renderers contained in the model
             foreach (SkinnedMeshRenderer renderer in m_Renderers)
-                // if dither shader, change its transparency
-                renderer.material.SetFloat("_Transparency", value);
+            {
+                // is a standard shader, i.e not supporting the dithering?
+                if (renderer.material.shader.name == "Standard")
+                    // enable or disable the object itself, otherwise it may interfere with dithering
+                    renderer.gameObject.SetActive(value >= 1.0f);
+                else
+                {
+                    // shut down the shadows and lights on model while the dithering is applied
+                    if (value < 1.0f)
+                        renderer.material.renderQueue = 3000;
+                    else
+                        renderer.material.renderQueue = m_RenderQueues[index];
+
+                    // if dither shader, change its transparency
+                    renderer.material.SetFloat("_Transparency", value);
+                }
+
+                ++index;
+            }
         }
     }
 
